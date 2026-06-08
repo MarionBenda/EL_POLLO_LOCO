@@ -1,7 +1,11 @@
 let Canvas;
-let character = new Image();
+let ctx;
+let world = new World();
 
 function init() {
   Canvas = document.getElementById('gameCanvas');
-  character.src = 'assets/character.png';
+  ctx = Canvas.getContext('2d');
+  console.log('My Character is', world.myCharacter);
+  console.log('Enemies are', world.enemies);
+  console.log('World is', world);
 }
