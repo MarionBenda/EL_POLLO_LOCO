@@ -22,11 +22,11 @@ window.addEventListener('keydown', (e) => {
     keyboard.SPACE = true;
   }
 
-  if (e.code === 'up') {
+  if (e.code === 'ArrowUp') {
     keyboard.UP = true;
   }
 
-  if (e.code === 'down') {
+  if (e.code === 'ArrowDown') {
     keyboard.DOWN = true;
   }
 });
@@ -42,11 +42,11 @@ window.addEventListener('keyup', (e) => {
     keyboard.SPACE = false;
   }
 
-  if (e.code === 'up') {
+  if (e.code === 'ArrowUp') {
     keyboard.UP = false;
   }
 
-  if (e.code === 'down') {
+  if (e.code === 'ArrowDown') {
     keyboard.DOWN = false;
   }
 });
