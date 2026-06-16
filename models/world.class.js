@@ -9,14 +9,16 @@ class World {
   coinBar = new CoinBar();
   bottleBar = new BottleBar();
   throwableObject = [];
+  collectedCoinsCount = 0;
+  totalCoins = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.totalCoins = this.level.coins.length;
     this.draw();
     this.setWorld();
-    this.checkCollisions();
     this.run();
   }
 
@@ -26,7 +28,7 @@ class World {
   }
 
   run() {
-    setInterval(() => {
+    this.character.setStopableInterval(() => {
       this.checkCollisions();
       this.checkThrowObjects();
     }, 200);
@@ -35,11 +37,16 @@ class World {
   checkThrowObjects() {
     if (this.keyboard.D) {
       let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
-      this - this.throwableObject.push(bottle);
+      this.throwableObject.push(bottle);
     }
   }
 
   checkCollisions() {
+    this.checkEnemyCollisions();
+    this.checkCoinCollisions();
+  }
+
+  checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
@@ -48,47 +55,54 @@ class World {
     });
   }
 
+  checkCoinCollisions() {
+    this.level.coins.forEach((coin, index) => {
+      if (this.character.isColliding(coin)) {
+        this.level.coins.splice(index, 1);
+        this.collectedCoinsCount++;
+        let percentage = (this.collectedCoinsCount / this.totalCoins) * 100;
+        this.coinBar.setPercentage(percentage);
+        this.coinBar.playBlinkEffect();
+      }
+    });
+  }
+
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
-
-    this.addObjectsToMap(this.level.backgroundObject);
+    this.addLevelObjects();
     this.ctx.translate(-this.camera_x, 0);
+    this.addStatusBars();
+    let self = this;
+    requestAnimationFrame(() => self.draw());
+  }
+
+  addLevelObjects() {
+    this.addObjectsToMap(this.level.backgroundObject);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.throwableObject);
+    this.addToMap(this.character);
+  }
+
+  addStatusBars() {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
-    this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.coins);
-    this.addToMap(this.character);
-    this.addObjectsToMap(this.level.enemies);
-
-    this.addObjectsToMap(this.throwableObject);
-
-    this.ctx.translate(-this.camera_x, 0);
-
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
   }
 
   addObjectsToMap(objects) {
-    objects.forEach((object) => {
-      this.addToMap(object);
-    });
+    objects.forEach((object) => this.addToMap(object));
   }
 
   addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
+    if (mo.otherDirection) this.flipImage(mo);
+    if (mo.isBlinking) this.ctx.globalAlpha = 0.5;
     mo.draw(this.ctx);
     mo.drawFrame(this.ctx);
-
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
+    this.ctx.globalAlpha = 1;
+    if (mo.otherDirection) this.flipImageBack(mo);
   }
 
   flipImage(mo) {

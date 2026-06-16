@@ -1,30 +1,39 @@
-const level1 = new Level(
-  [new Chicken(), new Chicken(), new Chicken(), new Endboss()],
+const REPEAT_COUNT = 18;
+const BG_WIDTH = 720;
+const LEVEL_END_X = (REPEAT_COUNT - 1) * BG_WIDTH;
 
-  [new Cloud()],
+function createBackgrounds() {
+  let backgrounds = [];
+  for (let i = 0; i < REPEAT_COUNT; i++) {
+    let x = BG_WIDTH * i;
+    let layerNum = i % 2 === 0 ? 1 : 2;
+    backgrounds.push(new BackgroundObject('img/5_background/layers/air.png', x));
+    backgrounds.push(new BackgroundObject(`img/5_background/layers/3_third_layer/${layerNum}.png`, x));
+    backgrounds.push(new BackgroundObject(`img/5_background/layers/2_second_layer/${layerNum}.png`, x));
+    backgrounds.push(new BackgroundObject(`img/5_background/layers/1_first_layer/${layerNum}.png`, x));
+  }
+  return backgrounds;
+}
 
-  [
-    new BackgroundObject('img/5_background/layers/air.png', -720),
-    new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -720),
-    new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -720),
-    new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -720),
-    new BackgroundObject('img/5_background/layers/air.png', 0),
-    new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-    new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-    new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
-    new BackgroundObject('img/5_background/layers/air.png', 720),
-    new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 720),
-    new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 720),
-    new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 720),
-    new BackgroundObject('img/5_background/layers/air.png', 720 * 2),
-    new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 720 * 2),
-    new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 720 * 2),
-    new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 720 * 2),
-    new BackgroundObject('img/5_background/layers/air.png', 720 * 3),
-    new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 720 * 3),
-    new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 720 * 3),
-    new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 720 * 3),
-  ],
+function createLevelEnemies() {
+  let enemies = [];
+  for (let i = 0; i < 20; i++) {
+    let x = 600 + i * 600 + Math.random() * 300;
+    if (x < LEVEL_END_X - 500) enemies.push(new Chicken(x));
+  }
+  enemies.push(new Endboss(LEVEL_END_X + 200));
+  return enemies;
+}
 
-  [new Coins(), new Coins(), new Coins(), new Coins(), new Coins(), new Coins()],
-);
+function createLevelCoins() {
+  let coins = [];
+  let stopX = LEVEL_END_X - 500;
+  for (let x = 500; x < stopX; x += 300) {
+    coins.push(new Coins(x + Math.random() * 100));
+  }
+  return coins;
+}
+
+const level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins());
+
+level1.level_end_x = LEVEL_END_X;

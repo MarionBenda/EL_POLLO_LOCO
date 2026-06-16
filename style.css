@@ -7,3 +7,31 @@ body {
 canvas {
   background-color: black;
 }
+
+.canvas-wrapper {
+  position: relative;
+  width: 720px;
+  height: 480px;
+  margin: 0 auto;
+}
+
+#gameCanvas {
+  display: block;
+}
+
+#game-over-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 80%;
+  height: auto;
+
+  z-index: 10;
+  object-fit: contain;
+}
+
+.d-none {
+  display: none;
+}

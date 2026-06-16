@@ -1,4 +1,5 @@
 class StatusBar extends DrawableObject {
+  isBlinking = false;
   width = 200;
   height = 60;
   x = 5;
@@ -24,5 +25,12 @@ class StatusBar extends DrawableObject {
     this.percentage = percentage;
     let path = this.IMAGES[this.resolveImageIndex()];
     this.img = this.imageCache[path];
+  }
+
+  playBlinkEffect() {
+    this.isBlinking = true;
+    setTimeout(() => {
+      this.isBlinking = false;
+    }, 150);
   }
 }

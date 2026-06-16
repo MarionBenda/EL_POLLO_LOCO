@@ -14,17 +14,17 @@ class Endboss extends MovableObject {
     'img/4_enemie_boss_chicken/2_alert/G12.png',
   ];
 
-  constructor() {
-    super().loadImage(this.IMAGES_WALKING[0]);
+  constructor(x) {
+    super(); // super() muss zwingend alleine in der ersten Zeile stehen
+    this.loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 2500;
+    this.x = x; // Dynamisches X statt hartcodiertem Wert
     this.animate();
   }
 
   animate() {
-    this.playAnimation(this.IMAGES_WALKING);
-
-    setInterval(() => {
+    // KORREKTUR: Normales setInterval durch setStopableInterval ersetzen!
+    this.setStopableInterval(() => {
       this.playAnimation(this.IMAGES_WALKING);
     }, 200);
   }

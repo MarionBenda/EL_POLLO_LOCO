@@ -5,6 +5,17 @@ class MovableObject extends DrawableObject {
   acceleration = 2.8;
   energy = 100;
   lastHit = 0;
+  static intervalIds = [];
+
+  setStopableInterval(callbackFunction, time) {
+    let id = setInterval(callbackFunction, time);
+    MovableObject.intervalIds.push(id);
+  }
+
+  static stopAllIntervals() {
+    MovableObject.intervalIds.forEach(clearInterval);
+    MovableObject.intervalIds = [];
+  }
 
   applyGravity() {
     setInterval(() => {
