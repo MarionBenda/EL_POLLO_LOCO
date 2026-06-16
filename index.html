@@ -5,19 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
     <title>Document</title>
+    <!-- 1. Basis-Klassen (Das Fundament) -->
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/moveable-object.class.js"></script>
+
+    <!-- 2. UI & Steuerung (Unabhängig) -->
+    <script src="./models/keyboard.class.js"></script>
+    <script src="./models/status-bar.class.js"></script>
+    <script src="./models/health-bar.class.js"></script>
+    <script src="./models/coin-bar.class.js"></script>
+    <script src="./models/bottle-bar.class.js"></script>
+
+    <!-- 3. Spiel-Objekte (Müssen vor dem Level geladen werden!) -->
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
-    <script src="./models/cloud.class.js"></script>
-    <script src="./models/status-bar.class.js"></script>
-    <script src="./models/thorwable-objects.class.js"></script>
-    <script src="./models/world.class.js"></script>
-    <script src="./models/background-object.class.js"></script>
-    <script src="./models/keyboard.class.js"></script>
-    <script src="./models/level.class.js"></script>
     <script src="./models/endboss.class.js"></script>
+    <script src="./models/cloud.class.js"></script>
+    <script src="./models/background-object.class.js"></script>
+    <script src="./models/coin.class.js"></script>
+    <script src="./models/thorwable-objects.class.js"></script>
+
+    <!-- 4. Level-Struktur & Level-Daten -->
+    <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
+    <!-- Level1 nutzt jetzt die Objekte von oben -->
+
+    <!-- 5. Das "Gehirn" des Spiels (Nutzt alles oben Genannte) -->
+    <script src="./models/world.class.js"></script>
     <script src="./js/game.js"></script>
   </head>
   <body onload="init()">
