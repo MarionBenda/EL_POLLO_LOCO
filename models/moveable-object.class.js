@@ -6,6 +6,9 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
   static intervalIds = [];
+  static gameIsOver = false;
+
+  offset = { top: 0, bottom: 0, left: 0, right: 0 };
 
   setStopableInterval(callbackFunction, time) {
     let id = setInterval(callbackFunction, time);
@@ -18,10 +21,13 @@ class MovableObject extends DrawableObject {
   }
 
   applyGravity() {
-    setInterval(() => {
+    this.setStopableInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
+      } else {
+        this.y = 150;
+        this.speedY = 0;
       }
     }, 1000 / 25);
   }
@@ -35,7 +41,12 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(mo) {
-    return this.x + this.width > mo.x && this.y + this.height > mo.y && this.x < mo.x && this.y < mo.y + mo.height;
+    return (
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+      this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+    );
   }
 
   hit() {

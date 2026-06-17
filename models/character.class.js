@@ -46,6 +46,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
+    this.offset = { top: 120, bottom: 10, left: 15, right: 15 };
   }
 
   animate() {
@@ -54,7 +55,7 @@ class Character extends MovableObject {
   }
 
   moveCharacter() {
-    if (this.isDead()) return;
+    if (this.isDead() || MovableObject.gameIsOver) return;
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
       this.moveRight();
       this.otherDirection = false;
@@ -73,9 +74,27 @@ class Character extends MovableObject {
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()) {
-      this.playAnimation(this.IMAGES_JUMPING);
+      this.playAirAnimation();
+    } else {
+      this.handleLandingAnimation();
+    }
+  }
+
+  playAirAnimation() {
+    let index = Math.floor(this.currentImage / 2) % 8;
+    this.img = this.imageCache[this.IMAGES_JUMPING[index]];
+    this.currentImage++;
+  }
+
+  handleLandingAnimation() {
+    if (this.currentImage > 0) {
+      this.img = this.imageCache[this.IMAGES_JUMPING[8]];
+      this.currentImage = 0;
+      setTimeout(() => {}, 100);
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.playAnimation(this.IMAGES_WALKING);
+    } else {
+      this.loadImage('img/2_character_pepe/2_walk/W-21.png');
     }
   }
 
@@ -89,11 +108,13 @@ class Character extends MovableObject {
   }
 
   showGameOver() {
+    MovableObject.gameIsOver = true;
     document.getElementById('game-over-screen').classList.remove('d-none');
     MovableObject.stopAllIntervals();
   }
 
   jump() {
     this.speedY = 30;
+    this.currentImage = 0;
   }
 }

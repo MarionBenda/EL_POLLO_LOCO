@@ -19,7 +19,13 @@ function createLevelEnemies() {
   let enemies = [];
   for (let i = 0; i < 20; i++) {
     let x = 600 + i * 600 + Math.random() * 300;
-    if (x < LEVEL_END_X - 500) enemies.push(new Chicken(x));
+    if (x < LEVEL_END_X - 500) {
+      if (i % 2 === 0) {
+        enemies.push(new Chicken(x));
+      } else {
+        enemies.push(new SmallChicken(x));
+      }
+    }
   }
   enemies.push(new Endboss(LEVEL_END_X + 200));
   return enemies;
@@ -34,6 +40,19 @@ function createLevelCoins() {
   return coins;
 }
 
-const level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins());
+function createLevelBottle() {
+  let bottles = [];
+  let stopX = LEVEL_END_X - 500;
+  let i = 0;
+
+  for (let x = 500; x < stopX; x += 300) {
+    let isInAir = i % 2 === 0;
+    bottles.push(new Bottle(x + Math.random() * 100, isInAir));
+    i++;
+  }
+  return bottles;
+}
+
+const level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins(), createLevelBottle());
 
 level1.level_end_x = LEVEL_END_X;

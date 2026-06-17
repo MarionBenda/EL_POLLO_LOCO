@@ -5,43 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./font.css" />
-    <title>Document</title>
-    <!-- 1. Basis-Klassen (Das Fundament) -->
+    <link rel="shortcut icon" href="img/2_character_pepe/3_jump/J-31.png" type="image/x-icon" />
+    <title>EL Pollo Loco</title>
+    <script src="./js/dialog.js" defer></script>
+    <script src="./js/game.js" defer></script>
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/moveable-object.class.js"></script>
-
-    <!-- 2. UI & Steuerung (Unabhängig) -->
     <script src="./models/keyboard.class.js"></script>
     <script src="./models/status-bar.class.js"></script>
     <script src="./models/health-bar.class.js"></script>
+    <script src="./models/boss-bar.class.js"></script>
     <script src="./models/coin-bar.class.js"></script>
     <script src="./models/bottle-bar.class.js"></script>
-
-    <!-- 3. Spiel-Objekte (Müssen vor dem Level geladen werden!) -->
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
+    <script src="./models/chicken-small.class.js"></script>
     <script src="./models/endboss.class.js"></script>
     <script src="./models/cloud.class.js"></script>
     <script src="./models/background-object.class.js"></script>
     <script src="./models/coin.class.js"></script>
+    <script src="./models/bottle.class.js"></script>
     <script src="./models/thorwable-objects.class.js"></script>
-
-    <!-- 4. Level-Struktur & Level-Daten -->
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
-    <!-- Level1 nutzt jetzt die Objekte von oben -->
-
-    <!-- 5. Das "Gehirn" des Spiels (Nutzt alles oben Genannte) -->
     <script src="./models/world.class.js"></script>
-    <script src="./js/game.js"></script>
   </head>
-  <body onload="init()">
+
+  <body>
     <h1>El Pollo Loco</h1>
     <div class="canvas-wrapper">
       <canvas id="gameCanvas" width="720" height="480"></canvas>
 
-      <!-- Das Bild liegt jetzt AUSSERHALB des Canvas, aber im gleichen Container -->
+      <button id="restart-btn" class="btn-restart d-none" onclick="restartGame()">TRY AGAIN</button>
+
       <img id="game-over-screen" class="d-none" src="img/You won, you lost/Game Over.png" />
+      <img id="you-won-intro" class="d-none" src="img/You won, you lost/You win B.png" />
+      <img id="you-won-final" class="d-none" src="img/You won, you lost/Game Over.png" />
     </div>
+    <section id="start-dialog" class="dialog-overlay" onclick="closeStartDialog(event)">
+      <div class="dialog-content">
+        <h2>Welcome to El Pollo Loco!</h2>
+        <div class="dialog-story">
+          <h3>Die Story</h3>
+          <p>
+            El Pollo Supremo – der tyrannische Riesen-Gockel – hat das Dorf überfallen und alle heiligen Goldmünzen gestohlen! Die Wüste ist nun ein
+            gackerndes Schlachtfeld.
+          </p>
+          <p>Schlüpfe in die Rolle von Held Pepe und hole das Gold zurück!</p>
+        </div>
+
+        <div class="dialog-enemies">
+          <h3>Gegner & Tipps</h3>
+
+          <div class="enemy-card">
+            <span class="enemy-icon"><img src="./img/3_enemies_chicken/chicken_normal/1_walk/1_w.png" alt="" /></span>
+            <p><strong>Grumpy Cluckers:</strong> Langsam. Besiege sie mit Hot Sauce oder springe auf sie drauf!</p>
+          </div>
+
+          <div class="enemy-card">
+            <span class="enemy-icon"><img src="./img/3_enemies_chicken/chicken_small/1_walk/1_w.png" alt="" /></span>
+            <p><strong>Chili-Chicks:</strong> Blitzschnell! Nutze deine Hot Sauce, bevor sie dich erwischen.</p>
+          </div>
+
+          <div class="enemy-card">
+            <span class="enemy-icon"><img src="./img/4_enemie_boss_chicken/1_walk/G1.png" alt="" /></span>
+            <p><strong>The Boss:</strong> Stelle El Pollo Supremo im tiefsten Canyon zum feurigen Showdown!</p>
+          </div>
+        </div>
+
+        <fieldset class="controls-box">
+          <legend>Steuerung</legend>
+          <div class="controls-grid">
+            <div class="control-row">
+              <div class="keys-container"><kbd>←</kbd><kbd>→</kbd></div>
+              <span class="control-action">Laufen</span>
+            </div>
+
+            <div class="control-row">
+              <div class="keys-container">
+                <kbd class="space-key">Space</kbd>
+              </div>
+              <span class="control-action">Springen / Flattern</span>
+            </div>
+
+            <div class="control-row">
+              <div class="keys-container">
+                <kbd>D</kbd>
+              </div>
+              <span class="control-action">Flasche werfen</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <button class="btn-restart">SPIEL STARTEN</button>
+      </div>
+    </section>
   </body>
 </html>
