@@ -19,7 +19,7 @@ function createLevelEnemies() {
   let enemies = [];
   let stopX = LEVEL_END_X - 200;
 
-  for (let x = 600; x < stopX; x += 550) {
+  for (let x = 600; x < stopX; x += 300) {
     let randomX = x + Math.random() * 200;
 
     if (Math.random() > 0.5) {

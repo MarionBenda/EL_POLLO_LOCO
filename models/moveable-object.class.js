@@ -26,7 +26,7 @@ class MovableObject extends DrawableObject {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
-      } else {
+      } else if (this instanceof Character) {
         this.y = 150;
         this.speedY = 0;
       }
@@ -34,11 +34,8 @@ class MovableObject extends DrawableObject {
   }
 
   isAboveGround() {
-    if (this instanceof ThrowableObject) {
-      return true;
-    } else {
-      return this.y < 150;
-    }
+    if (this instanceof ThrowableObject) return true;
+    if (this instanceof Character) return this.y < 150;
   }
 
   isColliding(mo) {
@@ -72,7 +69,9 @@ class MovableObject extends DrawableObject {
   playAnimation(images) {
     let index = this.currentImage % images.length;
     let path = images[index];
-    this.img = this.imageCache[path];
+
+    this.img = this.imageCache[path] || DrawableObject.globalCache[path];
+
     this.currentImage++;
   }
 

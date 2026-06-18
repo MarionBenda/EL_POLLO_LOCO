@@ -3,6 +3,7 @@ class SmallChicken extends MovableObject {
   width = 80;
   height = 80;
   isDead = false;
+  world;
   IMAGE_DEAD = 'img/3_enemies_chicken/chicken_small/2_dead/dead.png';
   IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -22,7 +23,11 @@ class SmallChicken extends MovableObject {
 
   animate() {
     this.setStopableInterval(() => {
-      if (!this.isDead) this.moveLeft();
+      let isVisible = this.world && this.x < -this.world.camera_x + 750;
+
+      if (!this.isDead && isVisible) {
+        this.moveLeft();
+      }
     }, 1000 / 60);
 
     this.setStopableInterval(() => {

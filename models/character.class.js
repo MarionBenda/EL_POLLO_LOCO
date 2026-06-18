@@ -159,6 +159,7 @@ class Character extends MovableObject {
 
   showGameOver() {
     MovableObject.gameIsOver = true;
+    SoundManager.playSound('gameOver');
     document.getElementById('game-over-screen').classList.remove('d-none');
     document.getElementById('restart-container').classList.remove('d-none');
     MovableObject.stopAllIntervals();

@@ -5,6 +5,9 @@ class Endboss extends MovableObject {
   energy = 100;
   isDead = false;
   isHurtStatus = false;
+  isEnraged = false;
+  rageDirection = 'left';
+  returnX = 0;
   startX;
   patrolRange = 500;
   movingLeft = true;
@@ -48,15 +51,23 @@ class Endboss extends MovableObject {
   }
 
   moveBoss() {
-    if (this.isDead || this.isHurtStatus) return;
-    if (this.movingLeft) {
-      this.x -= this.speed;
+    if (this.isDead) return;
+    if (this.isEnraged) {
+      this.x += (this.rageDirection === 'left' ? -1 : 1) * (this.speed * 3.5);
+      this.otherDirection = this.rageDirection === 'right';
+    } else if (this.isReturning) {
+      let dist = this.returnX - this.x;
+      if (Math.abs(dist) < 10) this.isReturning = false;
+      else {
+        this.x += Math.sign(dist) * (this.speed * 2);
+        this.otherDirection = dist > 0;
+      }
+    } else if (!this.isHurtStatus) {
+      this.x += this.movingLeft ? -this.speed : this.speed;
       if (this.x < this.startX - this.patrolRange) this.movingLeft = false;
-    } else {
-      this.x += this.speed;
       if (this.x > this.startX) this.movingLeft = true;
+      this.otherDirection = !this.movingLeft;
     }
-    this.otherDirection = !this.movingLeft;
   }
 
   playBossAnimations() {
@@ -95,7 +106,17 @@ class Endboss extends MovableObject {
       this.currentImage = 0;
     } else {
       this.isHurtStatus = true;
-      setTimeout(() => (this.isHurtStatus = false), 600);
+      if (this.world?.character) this.rageDirection = this.world.character.x < this.x ? 'left' : 'right';
+      this.returnX = this.x;
+      this.isReturning = false;
+      setTimeout(() => {
+        this.isHurtStatus = false;
+        this.isEnraged = true;
+      }, 400);
+      setTimeout(() => {
+        this.isEnraged = false;
+        this.isReturning = true;
+      }, 1200);
     }
   }
 }

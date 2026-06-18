@@ -14,8 +14,14 @@ function init() {
 
 function restartGame() {
   MovableObject.stopAllIntervals();
+  SoundManager.sounds.gameOver.pause();
+  SoundManager.sounds.gameOver.currentTime = 0;
+  SoundManager.sounds.gameWin.pause();
+  SoundManager.sounds.gameWin.currentTime = 0;
+  SoundManager.playBackground();
   document.getElementById('game-over-screen').classList.add('d-none');
   document.getElementById('you-won-screen').classList.add('d-none');
+  document.getElementById('restart-container').classList.add('d-none');
   initLevel();
   world = new World(canvas, keyboard);
 }
@@ -86,3 +92,16 @@ window.addEventListener('keyup', (e) => {
     keyboard.D = false;
   }
 });
+
+function toggleGameMute() {
+  SoundManager.toggleMute();
+
+  const muteBtn = document.getElementById('mute-btn');
+  if (SoundManager.isMuted) {
+    muteBtn.innerText = '🔇';
+    muteBtn.classList.add('muted');
+  } else {
+    muteBtn.innerText = '🔊';
+    muteBtn.classList.remove('muted');
+  }
+}

@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Oi';
-  src: url('./fonts/Oi/Oi-Regular.ttf');
+  src: url('../fonts/Oi/Oi-Regular.ttf') format('truetype');
 }
 
 @font-face {

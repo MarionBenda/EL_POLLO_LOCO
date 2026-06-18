@@ -71,3 +71,28 @@
 #you-won-screen .btn-restart:active {
   transform: translateX(-50%) scale(0.98);
 }
+
+.btn-mute {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #ffca28;
+  color: white;
+  font-size: 24px;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-mute:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.btn-mute.muted {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.2);
+}

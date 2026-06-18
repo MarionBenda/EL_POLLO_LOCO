@@ -3,6 +3,8 @@ class Chicken extends MovableObject {
   width = 80;
   height = 80;
   isDead = false;
+  world;
+
   IMAGE_DEAD = 'img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
   IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',

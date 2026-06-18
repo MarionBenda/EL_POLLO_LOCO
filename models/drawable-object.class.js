@@ -1,6 +1,7 @@
 class DrawableObject {
   img;
-  imageCache = [];
+  imageCache = {};
+  static globalCache = {};
   currentImage = 0;
   x = 120;
   y = 280;
@@ -13,7 +14,13 @@ class DrawableObject {
   }
 
   draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    if (!this.img && DrawableObject.imageCache[this.img?.src]) {
+      this.img = DrawableObject.imageCache[this.img.src];
+    }
+
+    if (this.img && this.img.complete && this.img.naturalWidth !== 0) {
+      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
   }
 
   drawFrame(ctx) {}
@@ -23,6 +30,10 @@ class DrawableObject {
       let img = new Image();
       img.src = path;
       this.imageCache[path] = img;
+
+      if (!DrawableObject.globalCache[path]) {
+        DrawableObject.globalCache[path] = img;
+      }
     });
   }
 }

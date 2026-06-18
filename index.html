@@ -33,12 +33,14 @@
     <script src="./models/level.class.js"></script>
     <script src="./models/world.class.js"></script>
     <script src="./levels/level1.js"></script>
+    <script src="./models/sound-manager.class.js"></script>
     <script src="./js/game.js"></script>
   </head>
 
   <body>
     <h1>El Pollo Loco</h1>
     <div class="canvas-wrapper">
+      <button id="mute-btn" class="btn-mute" onclick="toggleGameMute()">🔊</button>
       <canvas id="gameCanvas" width="720" height="480"></canvas>
 
       <img id="game-over-screen" class="d-none end-screen-image" src="img/You won, you lost/Game Over.png" />
@@ -112,7 +114,7 @@
           </div>
         </fieldset>
 
-        <button class="btn-restart">SPIEL STARTEN</button>
+        <button class="btn-restart onclick=startGameFromDialog()">SPIEL STARTEN</button>
       </div>
     </section>
   </body>
