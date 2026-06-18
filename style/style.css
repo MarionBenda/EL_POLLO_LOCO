@@ -11,7 +11,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(./img/5_background/complete_background.png);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../img/5_background/complete_background.png);
   background-size: cover;
   background-attachment: fixed;
 }
@@ -76,61 +76,30 @@ canvas {
   pointer-events: auto;
 }
 
+.game-controls-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 720px;
+  margin: 20px auto 0 auto;
+  gap: 15px;
+}
+
 #restart-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 720px;
-  margin: 20px auto 0 auto;
+  width: 100%;
+  margin-top: -50px;
 }
 
-.btn-restart {
-  font-family: 'Oi', cursive;
-  font-size: 30px;
-  font-weight: lighter;
-  letter-spacing: 2px;
-  background-color: #333;
-  color: #ffaa00;
-  border: 3px solid #ffaa00;
-  border-radius: 8px;
-  padding: 12px 40px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.btn-restart:hover {
-  background-color: #ffcc00;
-  border-color: #ffcc00;
-  color: #000;
-  box-shadow:
-    0 0 8px #ffcc00,
-    0 0 20px rgba(255, 204, 0, 0.6);
-  transform: scale(1.03);
-}
-
-.btn-restart:active {
-  transform: scale(0.98);
-  box-shadow:
-    0 0 3px #ffff00,
-    0 0 10px #ffff00;
-}
-
-#game-over-screen .btn-restart:hover,
-#you-won-screen .btn-restart:hover {
-  transform: translateX(-50%) scale(1.03);
-}
-
-#game-over-screen .btn-restart:active,
-#you-won-screen .btn-restart:active {
-  transform: translateX(-50%) scale(0.98);
-}
-
-.d-none,
+[class*='d-none'],
+#game-over-screen.d-none,
+#you-won-screen.d-none,
+#restart-container.d-none,
 .dialog-overlay.d-none {
-  display: none !important;
+  display: none;
   pointer-events: none;
 }
 

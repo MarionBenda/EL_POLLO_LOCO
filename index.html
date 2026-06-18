@@ -3,24 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./font.css" />
+    <link rel="stylesheet" href="./style/style.css" />
+    <link rel="stylesheet" href="./style/font.css" />
+    <link rel="stylesheet" href="./style/fullcreen.css" />
+    <link rel="stylesheet" href="./style/btn.css" />
     <link rel="shortcut icon" href="img/2_character_pepe/3_jump/J-31.png" type="image/x-icon" />
+
     <title>EL Pollo Loco</title>
-    <!-- 1. Zuerst die reinen Hilfsskripte und Basis-Klassen laden -->
+
     <script src="./js/dialog.js" defer></script>
     <script src="./models/drawable-object.class.js"></script>
     <script src="./models/moveable-object.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
-
-    <!-- 2. Die Bars laden -->
     <script src="./models/status-bar.class.js"></script>
     <script src="./models/health-bar.class.js"></script>
     <script src="./models/boss-bar.class.js"></script>
     <script src="./models/coin-bar.class.js"></script>
     <script src="./models/bottle-bar.class.js"></script>
-
-    <!-- 3. Die Spielelemente (Entities) laden -->
     <script src="./models/character.class.js"></script>
     <script src="./models/chicken.class.js"></script>
     <script src="./models/chicken-small.class.js"></script>
@@ -30,15 +29,9 @@
     <script src="./models/coin.class.js"></script>
     <script src="./models/bottle.class.js"></script>
     <script src="./models/thorwable-objects.class.js"></script>
-
-    <!-- 4. Das Datenmodell für das Level und die Welt laden -->
     <script src="./models/level.class.js"></script>
     <script src="./models/world.class.js"></script>
-
-    <!-- 5. WICHTIG: Erst das Level-Skript, das die Klassen nutzt... -->
     <script src="./levels/level1.js"></script>
-
-    <!-- 6. ...und als ALLERLETZTES die game.js, die initLevel() steuert -->
     <script src="./js/game.js"></script>
   </head>
 
@@ -47,16 +40,19 @@
     <div class="canvas-wrapper">
       <canvas id="gameCanvas" width="720" height="480"></canvas>
 
-      <!-- GAME OVER SCREEN (Nur noch das reine Bild über dem Canvas) -->
       <img id="game-over-screen" class="d-none end-screen-image" src="img/You won, you lost/Game Over.png" />
 
-      <!-- GEWONNEN SCREEN (Nur noch das reine Bild über dem Canvas) -->
       <img id="you-won-screen" class="d-none end-screen-image" src="img/You won, you lost/You win B.png" />
     </div>
 
-    <!-- DIE BUTTONS: Liegen jetzt außerhalb des Wrappers frei im Raum -->
-    <div id="restart-container" class="d-none">
-      <button class="btn-restart" onclick="restartGame()">TRY AGAIN</button>
+    <div class="game-controls-bottom">
+      <div id="restart-container" class="d-none">
+        <button class="btn-restart" onclick="restartGame()">TRY AGAIN</button>
+      </div>
+
+      <div class="fullscreen-container">
+        <button class="btn-fullscreen" onclick="toggleFullscreen()">FULLSCREEN</button>
+      </div>
     </div>
 
     <section id="start-dialog" class="dialog-overlay" onclick="closeStartDialog(event)">
