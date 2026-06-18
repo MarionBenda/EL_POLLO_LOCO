@@ -17,16 +17,19 @@ function createBackgrounds() {
 
 function createLevelEnemies() {
   let enemies = [];
-  for (let i = 0; i < 20; i++) {
-    let x = 600 + i * 600 + Math.random() * 300;
-    if (x < LEVEL_END_X - 500) {
-      if (i % 2 === 0) {
-        enemies.push(new Chicken(x));
-      } else {
-        enemies.push(new SmallChicken(x));
-      }
+  let stopX = LEVEL_END_X - 500;
+  let i = 0;
+
+  for (let x = 600; x < stopX; x += 650) {
+    let randomX = x + Math.random() * 200;
+    if (i % 2 === 0) {
+      enemies.push(new Chicken(randomX));
+    } else {
+      enemies.push(new SmallChicken(randomX));
     }
+    i++;
   }
+
   enemies.push(new Endboss(LEVEL_END_X + 200));
   return enemies;
 }
@@ -53,6 +56,11 @@ function createLevelBottle() {
   return bottles;
 }
 
-const level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins(), createLevelBottle());
+let level1;
 
-level1.level_end_x = LEVEL_END_X;
+function initLevel() {
+  level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins(), createLevelBottle());
+  level1.level_end_x = LEVEL_END_X;
+}
+
+initLevel();

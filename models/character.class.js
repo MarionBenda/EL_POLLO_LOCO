@@ -5,6 +5,7 @@ class Character extends MovableObject {
   speed = 10;
   deadAnimationPlayed = false;
   world;
+  idleTimer = 0;
 
   IMAGES_WALKING = [
     'img/2_character_pepe/2_walk/W-21.png',
@@ -38,6 +39,31 @@ class Character extends MovableObject {
 
   IMAGES_HURT = ['img/2_character_pepe/4_hurt/H-41.png', 'img/2_character_pepe/4_hurt/H-42.png', 'img/2_character_pepe/4_hurt/H-43.png'];
 
+  IMAGES_IDLE = [
+    'img/2_character_pepe/1_idle/idle/I-1.png',
+    'img/2_character_pepe/1_idle/idle/I-2.png',
+    'img/2_character_pepe/1_idle/idle/I-3.png',
+    'img/2_character_pepe/1_idle/idle/I-4.png',
+    'img/2_character_pepe/1_idle/idle/I-5.png',
+    'img/2_character_pepe/1_idle/idle/I-6.png',
+    'img/2_character_pepe/1_idle/idle/I-7.png',
+    'img/2_character_pepe/1_idle/idle/I-8.png',
+    'img/2_character_pepe/1_idle/idle/I-9.png',
+    'img/2_character_pepe/1_idle/idle/I-10.png',
+  ];
+
+  IMAGES_IDLE_LONG = [
+    'img/2_character_pepe/1_idle/long_idle/I-11.png',
+    'img/2_character_pepe/1_idle/long_idle/I-12.png',
+    'img/2_character_pepe/1_idle/long_idle/I-13.png',
+    'img/2_character_pepe/1_idle/long_idle/I-14.png',
+    'img/2_character_pepe/1_idle/long_idle/I-15.png',
+    'img/2_character_pepe/1_idle/long_idle/I-16.png',
+    'img/2_character_pepe/1_idle/long_idle/I-17.png',
+    'img/2_character_pepe/1_idle/long_idle/I-18.png',
+    'img/2_character_pepe/1_idle/long_idle/I-19.png',
+    'img/2_character_pepe/1_idle/long_idle/I-20.png',
+  ];
   constructor() {
     super();
     this.loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -45,6 +71,8 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_IDLE_LONG);
     this.applyGravity();
     this.offset = { top: 120, bottom: 10, left: 15, right: 15 };
   }
@@ -72,8 +100,10 @@ class Character extends MovableObject {
     if (this.isDead()) {
       this.handleDeathAnimation();
     } else if (this.isHurt()) {
+      this.idleTimer = 0;
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()) {
+      this.idleTimer = 0;
       this.playAirAnimation();
     } else {
       this.handleLandingAnimation();
@@ -87,14 +117,33 @@ class Character extends MovableObject {
   }
 
   handleLandingAnimation() {
-    if (this.currentImage > 0) {
+    if (this.currentImage > 0 && this.isAboveGround()) {
       this.img = this.imageCache[this.IMAGES_JUMPING[8]];
       this.currentImage = 0;
-      setTimeout(() => {}, 100);
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      this.idleTimer = 0;
       this.playAnimation(this.IMAGES_WALKING);
     } else {
-      this.loadImage('img/2_character_pepe/2_walk/W-21.png');
+      if (this.idleTimer == 0) {
+        this.currentImage = 0;
+      }
+      this.handleIdleState();
+    }
+  }
+
+  handleIdleState() {
+    this.idleTimer += 50;
+
+    if (this.idleTimer >= 5000) {
+      let i = Math.floor(this.currentImage / 3) % this.IMAGES_IDLE_LONG.length;
+      let path = this.IMAGES_IDLE_LONG[i];
+      this.img = this.imageCache[path];
+      this.currentImage++;
+    } else {
+      let i = Math.floor(this.currentImage / 2) % this.IMAGES_IDLE.length;
+      let path = this.IMAGES_IDLE[i];
+      this.img = this.imageCache[path];
+      this.currentImage++;
     }
   }
 
@@ -110,6 +159,7 @@ class Character extends MovableObject {
   showGameOver() {
     MovableObject.gameIsOver = true;
     document.getElementById('game-over-screen').classList.remove('d-none');
+    document.getElementById('restart-container').classList.remove('d-none');
     MovableObject.stopAllIntervals();
   }
 

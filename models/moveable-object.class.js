@@ -17,7 +17,8 @@ class MovableObject extends DrawableObject {
 
   static stopAllIntervals() {
     MovableObject.intervalIds.forEach(clearInterval);
-    MovableObject.intervalIds = [];
+    MovableObject.intervalIds.length = 0;
+    MovableObject.gameIsOver = false;
   }
 
   applyGravity() {

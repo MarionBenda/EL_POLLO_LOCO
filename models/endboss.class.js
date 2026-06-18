@@ -82,13 +82,9 @@ class Endboss extends MovableObject {
 
   showYouWon() {
     MovableObject.gameIsOver = true;
-    document.getElementById('you-won-intro').classList.remove('d-none');
-    document.getElementById('restart-btn').classList.remove('d-none');
+    document.getElementById('you-won-screen').classList.remove('d-none');
+    document.getElementById('restart-container').classList.remove('d-none');
     MovableObject.stopAllIntervals();
-    setTimeout(() => {
-      document.getElementById('you-won-intro').classList.add('d-none');
-      document.getElementById('you-won-final').classList.remove('d-none');
-    }, 800);
   }
 
   bossHit() {

@@ -4,11 +4,20 @@ let keyboard = new Keyboard();
 
 function init() {
   canvas = document.getElementById('gameCanvas');
+  initLevel();
   world = new World(canvas, keyboard);
 
   console.log('My Character is', world.character);
   console.log('Enemies are', world.enemies);
   console.log('World is', world);
+}
+
+function restartGame() {
+  MovableObject.stopAllIntervals();
+  document.getElementById('game-over-screen').classList.add('d-none');
+  document.getElementById('you-won-screen').classList.add('d-none');
+  initLevel();
+  world = new World(canvas, keyboard);
 }
 
 window.addEventListener('keydown', (e) => {
