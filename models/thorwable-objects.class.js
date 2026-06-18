@@ -35,18 +35,19 @@ class ThrowableObject extends MovableObject {
   }
 
   throw(isLookingLeft, characterSpeed) {
-    this.speedY = 16;
+    let isJumping = this.world?.character?.isAboveGround();
+    let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
+
+    this.speedY = isJumping ? 20 : 18;
     this.applyGravity();
 
-    let baseSpeed = 3;
+    this.x += isLookingLeft ? (isJumping ? -65 : -20) : isJumping ? 65 : 20;
+    if (isJumping) this.y += 20;
 
-    if (isLookingLeft) {
-      this.speedX = -baseSpeed - characterSpeed;
-    } else {
-      this.speedX = baseSpeed + characterSpeed;
-    }
+    let base = running ? 20 : this.speedX;
+    this.speedX = isLookingLeft ? -base : base;
 
-    this.setStopableInterval(() => this.movePhysics(), 25);
+    this.setStopableInterval(() => this.movePhysics(), 1000 / 60);
     this.setStopableInterval(() => this.animateRotation(), 50);
   }
 

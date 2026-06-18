@@ -93,7 +93,8 @@ class Character extends MovableObject {
       this.otherDirection = true;
     }
     if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
-    this.world.camera_x = -this.x + 200;
+    let targetCameraX = -this.x + 200;
+    this.world.camera_x = Math.min(0, targetCameraX);
   }
 
   playCharacterAnimations() {

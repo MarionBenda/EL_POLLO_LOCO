@@ -17,17 +17,16 @@ function createBackgrounds() {
 
 function createLevelEnemies() {
   let enemies = [];
-  let stopX = LEVEL_END_X - 500;
-  let i = 0;
+  let stopX = LEVEL_END_X - 200;
 
-  for (let x = 600; x < stopX; x += 650) {
+  for (let x = 600; x < stopX; x += 550) {
     let randomX = x + Math.random() * 200;
-    if (i % 2 === 0) {
+
+    if (Math.random() > 0.5) {
       enemies.push(new Chicken(randomX));
     } else {
       enemies.push(new SmallChicken(randomX));
     }
-    i++;
   }
 
   enemies.push(new Endboss(LEVEL_END_X + 200));
