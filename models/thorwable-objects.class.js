@@ -2,6 +2,7 @@ class ThrowableObject extends MovableObject {
   height = 60;
   width = 50;
   isSplashed = false;
+  speedX = 10;
 
   IMAGES_ROTATING = [
     'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -19,7 +20,7 @@ class ThrowableObject extends MovableObject {
     'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png',
   ];
 
-  constructor(x, y) {
+  constructor(x, y, isLookingLeft, characterSpeed) {
     super();
     this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
     this.loadImages(this.IMAGES_ROTATING);
@@ -28,13 +29,22 @@ class ThrowableObject extends MovableObject {
     this.y = y;
     this.height = 60;
     this.width = 50;
+    this.acceleration = 4.5;
     this.offset = { top: 10, bottom: 10, left: 15, right: 15 };
-    this.throw();
+    this.throw(isLookingLeft, characterSpeed);
   }
 
-  throw() {
-    this.speedY = 30;
+  throw(isLookingLeft, characterSpeed) {
+    this.speedY = 16;
     this.applyGravity();
+
+    let baseSpeed = 3;
+
+    if (isLookingLeft) {
+      this.speedX = -baseSpeed - characterSpeed;
+    } else {
+      this.speedX = baseSpeed + characterSpeed;
+    }
 
     this.setStopableInterval(() => this.movePhysics(), 25);
     this.setStopableInterval(() => this.animateRotation(), 50);
@@ -42,7 +52,7 @@ class ThrowableObject extends MovableObject {
 
   movePhysics() {
     if (this.isSplashed) return;
-    this.x += 10;
+    this.x += this.speedX;
     if (this.y >= 350) {
       this.splash();
     }
@@ -53,10 +63,17 @@ class ThrowableObject extends MovableObject {
     this.playAnimation(this.IMAGES_ROTATING);
   }
 
-  splash() {
+  splash(enemy = null) {
     this.isSplashed = true;
     this.speedY = 0;
     this.acceleration = 0;
+    this.speedX = 0;
+
+    if (enemy) {
+      this.y = enemy.y + enemy.height / 2 - this.height / 2;
+    }
+
+    this.currentImage = 0;
 
     let splashInterval = setInterval(() => {
       this.playAnimation(this.IMAGES_SPLASH);
@@ -65,6 +82,6 @@ class ThrowableObject extends MovableObject {
     setTimeout(() => {
       clearInterval(splashInterval);
       this.y = -9999;
-    }, 150);
+    }, 350);
   }
 }

@@ -44,17 +44,17 @@ class World {
   }
 
   checkThrowObjects() {
-    if (MovableObject.gameIsOver) return;
-    let timeSinceLastThrow = new Date().getTime() - this.lastThrownTime;
-    if (this.keyboard.D && this.collectedBottlesCount > 0 && timeSinceLastThrow > 400) {
-      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
-      this.throwableObject.push(bottle);
+    let timePassed = new Date().getTime() - this.lastThrownTime;
+    if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 400) return;
 
-      this.collectedBottlesCount--;
-      let percentage = (this.collectedBottlesCount / this.totalBottles) * 100;
-      this.bottleBar.setPercentage(percentage);
-      this.lastThrownTime = new Date().getTime();
-    }
+    let left = this.character.otherDirection;
+    let spawnX = left ? this.character.x : this.character.x + 100;
+    let bottle = new ThrowableObject(spawnX, this.character.y + 100, left, this.character.speed);
+
+    this.throwableObject.push(bottle);
+    this.collectedBottlesCount--;
+    this.bottleBar.setPercentage((this.collectedBottlesCount / this.totalBottles) * 100);
+    this.lastThrownTime = new Date().getTime();
   }
 
   checkCollisions() {
@@ -72,6 +72,7 @@ class World {
         } else if (!this.character.isHurt() && !enemy.isDead) {
           this.character.hit();
           this.statusBar.setPercentage(this.character.energy);
+          this.statusBar.playBlinkEffect();
         }
       }
       this.checkBottleHitsEnemy(enemy);
@@ -105,7 +106,7 @@ class World {
   checkBottleHitsEnemy(enemy) {
     this.throwableObject.forEach((bottle) => {
       if (bottle.isColliding(enemy) && !bottle.isSplashed && !enemy.isDead) {
-        bottle.splash();
+        bottle.splash(enemy);
         if (enemy instanceof Endboss) {
           enemy.bossHit();
           this.bossBar.setPercentage(enemy.energy);
@@ -140,7 +141,6 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
-    this.addToMap(this.BossHealthBar);
 
     let boss = this.level.enemies.find((e) => e instanceof Endboss);
     if (boss && this.character.x > boss.startX - 1000) {
