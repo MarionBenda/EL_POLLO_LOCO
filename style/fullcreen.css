@@ -1,6 +1,6 @@
 .fullscreen-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -12,7 +12,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../img/5_background/complete_background.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .canvas-wrapper:fullscreen canvas {

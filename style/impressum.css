@@ -1,0 +1,49 @@
+html,
+body {
+  overflow: hidden;
+}
+
+.impressum-area {
+  max-width: 850px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+h2 {
+  font-family: 'Oi', cursive;
+  font-size: 34px;
+  font-weight: lighter;
+  color: #ffaa00;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+h3 {
+  font-family: 'Open-sans', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffaa00;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+p strong {
+  color: #ffcc00;
+}
+
+p:last-of-type {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+p {
+  font-family: 'Open-sans', cursive;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}

@@ -16,6 +16,10 @@ body {
   background-attachment: fixed;
 }
 
+a {
+  text-decoration: none;
+}
+
 h1 {
   padding-bottom: 0px;
   color: white;

@@ -20,6 +20,25 @@ function restartGame() {
   world = new World(canvas, keyboard);
 }
 
+function toggleFullscreen() {
+  let element = document.querySelector('.canvas-wrapper');
+
+  if (!document.fullscreenElement) {
+    element.requestFullscreen().catch((err) => {
+      console.warn(`Vollbild fehlgeschlagen: ${err.message}`);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+  window.addEventListener('keydown', (event) => {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+    if (event.code === 'KeyF') {
+      toggleFullscreen();
+    }
+  });
+}
+
 window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowRight') {
     keyboard.RIGHT = true;
