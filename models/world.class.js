@@ -8,7 +8,6 @@ class World {
   statusBar = new HealthBar();
   coinBar = new CoinBar();
   bottleBar = new BottleBar();
-  bottleBar = new BottleBar();
   bossBar = new BossHealthBar();
   throwableObject = [];
   collectedCoinsCount = 0;

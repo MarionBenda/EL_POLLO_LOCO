@@ -49,18 +49,18 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Start periodic boss movement and animation loops.
+   */
   animate() {
-    /**
-     * Start periodic boss movement and animation loops.
-     */
     this.setStopableInterval(() => this.moveBoss(), 1000 / 60);
     this.setStopableInterval(() => this.playBossAnimations(), 200);
   }
 
+  /**
+   * Update boss movement state (patrol, enraged, return).
+   */
   moveBoss() {
-    /**
-     * Update boss movement state (patrol, enraged, return).
-     */
     if (this.isDead) return;
     if (this.isEnraged) {
       this.x += (this.rageDirection === 'left' ? -1 : 1) * (this.speed * 3.5);
@@ -80,10 +80,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Choose appropriate animation based on boss state.
+   */
   playBossAnimations() {
-    /**
-     * Choose appropriate animation based on boss state.
-     */
     if (this.isDead) {
       this.handleBossDeath();
     } else if (this.isHurtStatus) {
@@ -95,10 +95,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Play death animation and trigger win when finished.
+   */
   handleBossDeath() {
-    /**
-     * Play death animation and trigger win when finished.
-     */
     if (this.deadAnimationPlayed) return;
     this.playAnimation(this.IMAGES_DEAD);
     if (this.currentImage >= this.IMAGES_DEAD.length) {
@@ -107,38 +107,33 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Display 'you won' UI and stop the game.
+   */
   showYouWon() {
-    /**
-     * Display 'you won' UI and stop the game.
-     */
     MovableObject.gameIsOver = true;
     document.getElementById('you-won-screen').classList.remove('d-none');
     document.getElementById('restart-container').classList.remove('d-none');
     MovableObject.stopAllIntervals();
   }
 
+  /**
+   * Apply damage to boss, set hurt/enraged state and schedule behavior.
+   */
   bossHit() {
-    /**
-     * Apply damage to boss, set hurt/enraged state and schedule behavior.
-     */
-    this.energy -= 20;
-    if (this.energy <= 0) {
-      this.energy = 0;
-      this.isDead = true;
-      this.currentImage = 0;
-    } else {
-      this.isHurtStatus = true;
-      if (this.world?.character) this.rageDirection = this.world.character.x < this.x ? 'left' : 'right';
-      this.returnX = this.x;
-      this.isReturning = false;
-      setTimeout(() => {
-        this.isHurtStatus = false;
-        this.isEnraged = true;
-      }, 400);
-      setTimeout(() => {
-        this.isEnraged = false;
-        this.isReturning = true;
-      }, 1200);
-    }
+    this.energy = Math.max(0, this.energy - 20);
+    if (this.energy === 0) return Object.assign(this, { isDead: true, currentImage: 0 });
+
+    this.isHurtStatus = true;
+    this.isReturning = false;
+    this.returnX = this.x;
+    if (this.world?.character) this.rageDirection = this.world.character.x < this.x ? 'left' : 'right';
+
+    this.triggerRageTimers();
+  }
+
+  triggerRageTimers() {
+    setTimeout(() => Object.assign(this, { isHurtStatus: false, isEnraged: true }), 400);
+    setTimeout(() => Object.assign(this, { isEnraged: false, isReturning: true }), 1200);
   }
 }

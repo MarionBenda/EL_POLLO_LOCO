@@ -57,19 +57,15 @@ class ThrowableObject extends MovableObject {
   throw(isLookingLeft, characterSpeed) {
     let isJumping = this.world?.character?.isAboveGround();
     let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
-
     this.speedY = isJumping ? 10 : 7.5;
     if (running && !isLookingLeft) {
       this.x -= 40;
     } else if (running && isLookingLeft) {
       this.x += 40;
     }
-
     this.x += isLookingLeft ? -20 : 20;
-
     let base = running ? 12 : 8.5;
     this.speedX = isLookingLeft ? -base : base;
-
     this.setStopableInterval(() => this.movePhysics(), 1000 / 60);
     this.setStopableInterval(() => this.animateRotation(), 50);
   }

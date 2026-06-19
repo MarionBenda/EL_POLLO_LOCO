@@ -4,13 +4,13 @@ class Keyboard {
   UP = false;
   DOWN = false;
   SPACE = false;
+  /**Shoot */
   D = false;
 
   /**
    * Bind keyboard keydown/keyup events to update state flags.
    */
   bindKeyPressEvents() {
-    // Arrow keys, Space and D key mapping
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowRight') this.RIGHT = true;
       if (e.code === 'ArrowLeft') this.LEFT = true;

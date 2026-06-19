@@ -12,12 +12,13 @@ class Chicken extends MovableObject {
     'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png',
   ];
 
+  /**
+   * Create a chicken enemy at specified x and start walking.
+   * @param {number} x - Starting X position for the chicken.
+   */
   constructor(x) {
     super();
-    /**
-     * Create a chicken enemy at specified x and start walking.
-     * @param {number} x - Starting X position for the chicken.
-     */
+
     this.loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
     this.loadImages(this.IMAGES_WALKING);
     this.x = x;
@@ -26,10 +27,10 @@ class Chicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Start movement and walking animation intervals.
+   */
   animate() {
-    /**
-     * Start movement and walking animation intervals.
-     */
     this.setStopableInterval(() => {
       if (!this.isDead) this.moveLeft();
     }, 1000 / 60);
@@ -39,10 +40,10 @@ class Chicken extends MovableObject {
     }, 200);
   }
 
+  /**
+   * Mark chicken as dead, play death sprite and remove later.
+   */
   kill() {
-    /**
-     * Mark chicken as dead, play death sprite and remove later.
-     */
     this.isDead = true;
     this.speed = 0;
     this.loadImage(this.IMAGE_DEAD);

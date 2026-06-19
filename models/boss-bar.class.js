@@ -8,11 +8,12 @@ class BossHealthBar extends StatusBar {
     'img/7_statusbars/2_statusbar_endboss/orange/orange100.png',
   ];
 
+  /**
+   * Initialize boss health bar images and default position.
+   */
   constructor() {
     super();
-    /**
-     * Initialize boss health bar images and default position.
-     */
+
     this.loadImages(this.IMAGES);
     this.x = 250;
     this.y = 10;

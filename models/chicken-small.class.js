@@ -11,12 +11,13 @@ class SmallChicken extends MovableObject {
     'img/3_enemies_chicken/chicken_small/1_walk/3_w.png',
   ];
 
+  /**
+   * Create a small chicken enemy at given x and start behavior.
+   * @param {number} x - Starting X position for the small chicken.
+   */
   constructor(x) {
     super();
-    /**
-     * Create a small chicken enemy at given x and start behavior.
-     * @param {number} x - Starting X position for the small chicken.
-     */
+
     this.loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
     this.loadImages(this.IMAGES_WALKING);
     this.x = x;
@@ -25,10 +26,10 @@ class SmallChicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Start movement and animation intervals, only when visible.
+   */
   animate() {
-    /**
-     * Start movement and animation intervals, only when visible.
-     */
     this.setStopableInterval(() => {
       let isVisible = this.world && this.x < -this.world.camera_x + 750;
 
@@ -42,10 +43,10 @@ class SmallChicken extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Mark small chicken dead and remove after delay.
+   */
   kill() {
-    /**
-     * Mark small chicken dead and remove after delay.
-     */
     this.isDead = true;
     this.speed = 0;
     this.loadImage(this.IMAGE_DEAD);

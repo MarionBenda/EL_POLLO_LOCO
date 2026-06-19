@@ -15,10 +15,10 @@ class MovableObject extends DrawableObject {
     MovableObject.intervalIds.push(id);
   }
 
+  /**
+   * Clear all stored intervals and reset game over flag.
+   */
   static stopAllIntervals() {
-    /**
-     * Clear all stored intervals and reset game over flag.
-     */
     MovableObject.intervalIds.forEach(clearInterval);
     MovableObject.intervalIds.length = 0;
     MovableObject.gameIsOver = false;
@@ -50,10 +50,10 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Apply damage to this object and record the hit timestamp.
+   */
   hit() {
-    /**
-     * Apply damage to this object and record the hit timestamp.
-     */
     this.energy -= 5;
     if (this.energy < 0) {
       this.energy = 0;
@@ -67,36 +67,31 @@ class MovableObject extends DrawableObject {
    */
   isHurt() {
     if (this.lastHit === 0) return false;
-    let timepassed = new Date().getTime() - this.lastHit;
-
-    return timepassed < 500;
+    let timePassed = new Date().getTime() - this.lastHit;
+    return timePassed < 500;
   }
-
   isDead() {
     return this.energy == 0;
   }
-
   playAnimation(images) {
     let index = this.currentImage % images.length;
     let path = images[index];
-
     this.img = this.imageCache[path];
-
     this.currentImage++;
   }
 
+  /** Move object to the right by its speed. */
   moveRight() {
-    /** Move object to the right by its speed. */
     this.x += this.speed;
   }
 
+  /** Move object to the left by its speed. */
   moveLeft() {
-    /** Move object to the left by its speed. */
     this.x -= this.speed;
   }
 
+  /** Set upward velocity for jump. */
   jump() {
-    /** Set upward velocity for jump. */
     this.speedY = 30;
   }
 }

@@ -8,11 +8,12 @@ class CoinBar extends StatusBar {
     'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png',
   ];
 
+  /**
+   * Initialize coin bar images and starting percentage.
+   */
   constructor() {
     super();
-    /**
-     * Initialize coin bar images and starting percentage.
-     */
+
     this.loadImages(this.IMAGES);
     this.y = 50;
     this.setPercentage(0);

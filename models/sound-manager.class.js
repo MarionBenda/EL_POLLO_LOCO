@@ -15,11 +15,12 @@ class SoundManager {
 
   static isMuted = false;
 
+  /**
+   * Start looping dialog audio at reduced volume.
+   */
   static startDialogSound() {
     if (this.isMuted) return;
-    /**
-     * Start looping dialog audio at reduced volume.
-     */
+
     this.sounds.dialog.loop = true;
     this.sounds.dialog.volume = 0.3;
     this.sounds.dialog.play().catch((e) => {
@@ -27,29 +28,29 @@ class SoundManager {
     });
   }
 
+  /**
+   * Stop and reset dialog audio playback.
+   */
   static stopDialogSound() {
-    /**
-     * Stop and reset dialog audio playback.
-     */
     this.sounds.dialog.pause();
     this.sounds.dialog.currentTime = 0;
   }
 
+  /**
+   * Play background music if not muted.
+   */
   static playBackground() {
-    /**
-     * Play background music if not muted.
-     */
     if (this.isMuted) return;
     this.sounds.background.loop = true;
     this.sounds.background.volume = 0.15;
     this.sounds.background.play();
   }
 
+  /**
+   * Play a named sound effect, pausing background on end/win.
+   * @param {string} name - Key name of the sound to play.
+   */
   static playSound(name) {
-    /**
-     * Play a named sound effect, pausing background on end/win.
-     * @param {string} name - Key name of the sound to play.
-     */
     if (this.isMuted) return;
 
     if (name === 'gameOver' || name === 'gameWin') {
@@ -63,10 +64,10 @@ class SoundManager {
     }
   }
 
+  /**
+   * Toggle global mute state for sound manager.
+   */
   static toggleMute() {
-    /**
-     * Toggle global mute state for sound manager.
-     */
     this.isMuted = !this.isMuted;
     this.sounds.background.muted = this.isMuted;
   }

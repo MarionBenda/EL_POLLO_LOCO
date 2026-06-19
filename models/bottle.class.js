@@ -14,7 +14,7 @@ class Bottle extends MovableObject {
    */
   constructor(x, isInAir) {
     super();
-    this.loadImages(this.IMAGES_BOTTLES); // <-- Diese Zeile hat gefehlt!
+    this.loadImages(this.IMAGES_BOTTLES);
     this.x = x;
     this.setupBottleType(isInAir);
   }

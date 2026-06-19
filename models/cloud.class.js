@@ -5,11 +5,12 @@ class Cloud extends MovableObject {
 
   IMAGES = ['img/5_background/layers/4_clouds/1.png', 'img/5_background/layers/4_clouds/2.png'];
 
+  /**
+   * Create a cloud with random image, position and speed.
+   */
   constructor() {
     super();
-    /**
-     * Create a cloud with random image, position and speed.
-     */
+
     let randomIndex = Math.round(Math.random());
     this.loadImage(this.IMAGES[randomIndex]);
 
@@ -18,10 +19,10 @@ class Cloud extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Continuously move cloud left for parallax effect.
+   */
   animate() {
-    /**
-     * Continuously move cloud left for parallax effect.
-     */
     this.setStopableInterval(() => {
       this.moveLeft();
     }, 1000 / 60);

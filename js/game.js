@@ -2,10 +2,10 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+/**
+ * Initialize canvas, input bindings and create the World instance.
+ */
 function init() {
-  /**
-   * Initialize canvas, input bindings and create the World instance.
-   */
   canvas = document.getElementById('gameCanvas');
   initLevel();
   keyboard.bindKeyPressEvents();
@@ -13,14 +13,13 @@ function init() {
 
   setTimeout(() => {
     world = new World(canvas, keyboard);
-    console.log('Spiel stabil initialisiert.');
   }, 50);
 }
 
+/**
+ * Restart the game: reset intervals, sounds, UI and re-init the level.
+ */
 function restartGame() {
-  /**
-   * Restart the game: reset intervals, sounds, UI and re-init the level.
-   */
   MovableObject.stopAllIntervals();
   ['gameOver', 'gameWin'].forEach((soundName) => {
     SoundManager.sounds[soundName].pause();
@@ -34,10 +33,10 @@ function restartGame() {
   setTimeout(() => (world = new World(canvas, keyboard)), 50);
 }
 
+/**
+ * Toggle browser fullscreen mode for the canvas wrapper.
+ */
 function toggleFullscreen() {
-  /**
-   * Toggle browser fullscreen mode for the canvas wrapper.
-   */
   let element = document.querySelector('.canvas-wrapper');
   if (!document.fullscreenElement) {
     element.requestFullscreen().catch((err) => console.warn(`Vollbild fehlgeschlagen: ${err.message}`));
@@ -52,10 +51,10 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
+/**
+ * Toggle global mute and update mute button UI.
+ */
 function toggleGameMute() {
-  /**
-   * Toggle global mute and update mute button UI.
-   */
   SoundManager.toggleMute();
   const muteBtn = document.getElementById('mute-btn');
   if (muteBtn) {

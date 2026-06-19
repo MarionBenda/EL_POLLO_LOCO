@@ -8,20 +8,20 @@ class DrawableObject {
   height = 150;
   width = 100;
 
+  /**
+   * Load a single image into this drawable object.
+   * @param {string} path - Image source path.
+   */
   loadImage(path) {
-    /**
-     * Load a single image into this drawable object.
-     * @param {string} path - Image source path.
-     */
     this.img = new Image();
     this.img.src = path;
   }
 
+  /**
+   * Draw the object's current image to the canvas if loaded.
+   * @param {CanvasRenderingContext2D} ctx - Canvas rendering context.
+   */
   draw(ctx) {
-    /**
-     * Draw the object's current image to the canvas if loaded.
-     * @param {CanvasRenderingContext2D} ctx - Canvas rendering context.
-     */
     if (!this.img && DrawableObject.globalCache[this.img?.src]) {
       this.img = DrawableObject.globalCache[this.img.src];
     }
@@ -33,11 +33,11 @@ class DrawableObject {
 
   drawFrame(ctx) {}
 
+  /**
+   * Preload multiple images into this object's cache and the global cache.
+   * @param {Array<string>} arr - Array of image paths.
+   */
   loadImages(arr) {
-    /**
-     * Preload multiple images into this object's cache and the global cache.
-     * @param {Array<string>} arr - Array of image paths.
-     */
     arr.forEach((path) => {
       let img = new Image();
       img.src = path;

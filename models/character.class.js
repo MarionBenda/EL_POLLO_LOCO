@@ -80,18 +80,18 @@ class Character extends MovableObject {
     this.offset = { top: 120, bottom: 10, left: 15, right: 15 };
   }
 
+  /**
+   * Start per-frame movement and animation loops for the character.
+   */
   animate() {
-    /**
-     * Start per-frame movement and animation loops for the character.
-     */
     this.setStopableInterval(() => this.moveCharacter(), 1000 / 60);
     this.setStopableInterval(() => this.playCharacterAnimations(), 50);
   }
 
+  /**
+   * Handle input-based movement and camera follow.
+   */
   moveCharacter() {
-    /**
-     * Handle input-based movement and camera follow.
-     */
     if (this.isDead() || MovableObject.gameIsOver) return;
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
       this.moveRight();
@@ -106,10 +106,10 @@ class Character extends MovableObject {
     this.world.camera_x = Math.min(0, targetCameraX);
   }
 
+  /**
+   * Choose and play correct animation based on character state.
+   */
   playCharacterAnimations() {
-    /**
-     * Choose and play correct animation based on character state.
-     */
     if (this.isDead()) {
       this.handleDeathAnimation();
     } else if (this.isHurt()) {
@@ -123,19 +123,19 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Play jumping animation frames while in air.
+   */
   playAirAnimation() {
-    /**
-     * Play jumping animation frames while in air.
-     */
     let index = Math.floor(this.currentImage / 2) % 8;
     this.img = this.imageCache[this.IMAGES_JUMPING[index]];
     this.currentImage++;
   }
 
+  /**
+   * Handle transition from air to landing and idle/walk states.
+   */
   handleLandingAnimation() {
-    /**
-     * Handle transition from air to landing and idle/walk states.
-     */
     if (this.currentImage > 0 && this.isAboveGround()) {
       this.img = this.imageCache[this.IMAGES_JUMPING[8]];
       this.currentImage = 0;
@@ -150,10 +150,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Advance idle animation and switch to long idle after timeout.
+   */
   handleIdleState() {
-    /**
-     * Advance idle animation and switch to long idle after timeout.
-     */
     this.idleTimer += 50;
 
     if (this.idleTimer >= 5000) {
@@ -169,10 +169,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Play death animation once and trigger game over.
+   */
   handleDeathAnimation() {
-    /**
-     * Play death animation once and trigger game over.
-     */
     if (this.deadAnimationPlayed) return;
     this.playAnimation(this.IMAGES_DEAD);
     if (this.currentImage >= this.IMAGES_DEAD.length) {
@@ -181,10 +181,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Set game over state, play sound and reveal UI.
+   */
   showGameOver() {
-    /**
-     * Set game over state, play sound and reveal UI.
-     */
     MovableObject.gameIsOver = true;
     SoundManager.playSound('gameOver');
     document.getElementById('game-over-screen').classList.remove('d-none');
@@ -192,10 +192,10 @@ class Character extends MovableObject {
     MovableObject.stopAllIntervals();
   }
 
+  /**
+   * Apply upward velocity and reset animation frame for jump.
+   */
   jump() {
-    /**
-     * Apply upward velocity and reset animation frame for jump.
-     */
     this.speedY = 30;
     this.currentImage = 0;
   }
