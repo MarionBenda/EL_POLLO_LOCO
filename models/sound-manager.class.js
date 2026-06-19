@@ -9,6 +9,8 @@ class SoundManager {
     gameOver: new Audio('audio/game-over.mp3'),
     pepeHurts: new Audio('audio/sound-pepe-hurt.mp3'),
     gameWin: new Audio('audio/sound-win.mp3'),
+    throwBottle: new Audio('audio/sound-throw.mp3'),
+    bottleBreak: new Audio('audio/sound-bottle-break.mp3'),
   };
 
   static isMuted = false;

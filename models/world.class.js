@@ -47,11 +47,11 @@ class World {
   checkThrowObjects() {
     let timePassed = new Date().getTime() - this.lastThrownTime;
     if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 400) return;
-
     let left = this.character.otherDirection;
     let spawnX = left ? this.character.x : this.character.x + 100;
     let bottle = new ThrowableObject(spawnX, this.character.y + 100, left, this.character.speed);
-
+    bottle.world = this;
+    bottle.throw(left, this.character.speed);
     this.throwableObject.push(bottle);
     this.collectedBottlesCount--;
     this.bottleBar.setPercentage((this.collectedBottlesCount / this.totalBottles) * 100);

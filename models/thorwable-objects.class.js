@@ -31,22 +31,21 @@ class ThrowableObject extends MovableObject {
     this.width = 50;
     this.acceleration = 4.5;
     this.offset = { top: 10, bottom: 10, left: 15, right: 15 };
-    this.throw(isLookingLeft, characterSpeed);
+    if (this.y > 330) {
+      this.y = 320;
+    }
+    SoundManager.sounds.throwBottle.play();
   }
 
   throw(isLookingLeft, characterSpeed) {
     let isJumping = this.world?.character?.isAboveGround();
     let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
-
     this.speedY = isJumping ? 20 : 18;
     this.applyGravity();
-
     this.x += isLookingLeft ? (isJumping ? -65 : -20) : isJumping ? 65 : 20;
     if (isJumping) this.y += 20;
-
     let base = running ? 20 : this.speedX;
     this.speedX = isLookingLeft ? -base : base;
-
     this.setStopableInterval(() => this.movePhysics(), 1000 / 60);
     this.setStopableInterval(() => this.animateRotation(), 50);
   }
@@ -65,21 +64,11 @@ class ThrowableObject extends MovableObject {
   }
 
   splash(enemy = null) {
-    this.isSplashed = true;
-    this.speedY = 0;
-    this.acceleration = 0;
-    this.speedX = 0;
-
-    if (enemy) {
-      this.y = enemy.y + enemy.height / 2 - this.height / 2;
-    }
-
-    this.currentImage = 0;
-
-    let splashInterval = setInterval(() => {
-      this.playAnimation(this.IMAGES_SPLASH);
-    }, 50);
-
+    SoundManager.sounds.bottleBreak.currentTime = 0;
+    SoundManager.sounds.bottleBreak.play();
+    Object.assign(this, { isSplashed: true, speedY: 0, acceleration: 0, speedX: 0, currentImage: 0 });
+    if (enemy) this.y = enemy.y + enemy.height / 2 - this.height / 2;
+    let splashInterval = setInterval(() => this.playAnimation(this.IMAGES_SPLASH), 50);
     setTimeout(() => {
       clearInterval(splashInterval);
       this.y = -9999;

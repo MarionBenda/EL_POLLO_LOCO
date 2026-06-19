@@ -366,3 +366,7 @@ kbd {
   display: flex;
   justify-content: center;
 }
+
+.mobile-impressum-top {
+  display: none;
+}
