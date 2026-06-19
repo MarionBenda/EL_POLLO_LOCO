@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./style/font.css" />
     <link rel="stylesheet" href="./style/fullcreen.css" />
     <link rel="stylesheet" href="./style/btn.css" />
+    <link rel="stylesheet" href="./style/media-query.css" />
 
     <link rel="shortcut icon" href="img/2_character_pepe/3_jump/J-31.png" type="image/x-icon" />
 
@@ -38,14 +39,36 @@
   </head>
 
   <body>
+    <div id="rotate-overlay">
+      <div class="rotate-message">
+        <div class="phone-icon">📱</div>
+        <p>Turn your Device to play</p>
+        <span>Bitte drehe dein Gerät ins Querformat.</span>
+      </div>
+    </div>
+
     <h1>El Pollo Loco</h1>
     <div class="canvas-wrapper">
       <button id="mute-btn" class="btn-mute" onclick="toggleGameMute()">🔊</button>
       <canvas id="gameCanvas" width="720" height="480"></canvas>
 
       <img id="game-over-screen" class="d-none end-screen-image" src="img/You won, you lost/Game Over.png" />
-
       <img id="you-won-screen" class="d-none end-screen-image" src="img/You won, you lost/You win B.png" />
+
+      <div id="mobile-controls-overlay" class="mobile-controls">
+        <div class="control-group-left">
+          <button id="LEFT" class="mobile-btn">◀</button>
+          <button id="RIGHT" class="mobile-btn">▶</button>
+        </div>
+        <div class="control-group-right">
+          <button id="D" class="mobile-btn action-btn">D</button>
+          <button id="SPACE" class="mobile-btn action-btn">▲</button>
+        </div>
+      </div>
+
+      <div id="restart-container" class="d-none dynamic-restart">
+        <button class="btn-restart" onclick="restartGame()">TRY AGAIN</button>
+      </div>
     </div>
 
     <div class="game-controls-bottom">
@@ -113,8 +136,15 @@
             </div>
           </div>
         </fieldset>
-
-        <button class="btn-restart onclick=startGameFromDialog()">SPIEL STARTEN</button>
+        <button
+          class="btn-restart"
+          onclick="
+            init();
+            document.getElementById('start-dialog').classList.add('d-none');
+          "
+        >
+          SPIEL STARTEN
+        </button>
       </div>
     </section>
   </body>
