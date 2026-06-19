@@ -106,6 +106,7 @@ h1 {
   display: flex;
   gap: 15px;
   pointer-events: auto;
+  touch-action: none;
 }
 
 .mobile-btn {

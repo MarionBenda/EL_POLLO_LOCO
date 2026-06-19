@@ -2,10 +2,12 @@
   .dynamic-restart {
     bottom: 20%;
   }
+
   h1,
   .game-controls-bottom {
     display: none;
   }
+
   .canvas-wrapper {
     width: 100vw;
     max-width: none;
@@ -15,23 +17,17 @@
     background-size: cover;
     background-position: center;
   }
-}
-@media (pointer: coarse) {
-  .dynamic-restart {
-    bottom: 20%;
+
+  .mobile-controls {
+    display: flex;
+    padding: 20px 30px;
+    box-sizing: border-box;
   }
-  h1,
-  .game-controls-bottom {
-    display: none;
-  }
-  .canvas-wrapper {
-    width: 100vw;
-    max-width: none;
-    height: 100vh;
-    box-shadow: none;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/5_background/complete_background.png);
-    background-size: cover;
-    background-position: center;
+
+  .mobile-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
   }
 }
 
