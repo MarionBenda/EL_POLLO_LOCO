@@ -22,38 +22,62 @@ class ThrowableObject extends MovableObject {
 
   constructor(x, y, isLookingLeft, characterSpeed) {
     super();
-    this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
-    this.loadImages(this.IMAGES_ROTATING);
-    this.loadImages(this.IMAGES_SPLASH);
     this.x = x;
     this.y = y;
     this.height = 60;
     this.width = 50;
-    this.acceleration = 4.5;
+    this.acceleration = 0.65;
     this.offset = { top: 10, bottom: 10, left: 15, right: 15 };
+    const mainPath = 'img/6_salsa_bottle/salsa_bottle.png';
+    if (DrawableObject.globalCache && DrawableObject.globalCache[mainPath]) {
+      this.img = DrawableObject.globalCache[mainPath];
+    } else {
+      this.loadImage(mainPath);
+    }
+    this.loadImages(this.IMAGES_ROTATING);
+    this.loadImages(this.IMAGES_SPLASH);
     if (this.y > 330) {
       this.y = 320;
     }
     SoundManager.sounds.throwBottle.play();
   }
 
+  draw(ctx) {
+    ctx.save();
+    ctx.globalAlpha = 1;
+    super.draw(ctx);
+    ctx.restore();
+  }
+
   throw(isLookingLeft, characterSpeed) {
     let isJumping = this.world?.character?.isAboveGround();
     let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
-    this.speedY = isJumping ? 20 : 18;
-    this.applyGravity();
-    this.x += isLookingLeft ? (isJumping ? -65 : -20) : isJumping ? 65 : 20;
-    if (isJumping) this.y += 20;
-    let base = running ? 20 : this.speedX;
+
+    this.speedY = isJumping ? 10 : 7.5;
+    if (running && !isLookingLeft) {
+      this.x -= 40;
+    } else if (running && isLookingLeft) {
+      this.x += 40;
+    }
+
+    this.x += isLookingLeft ? -20 : 20;
+
+    let base = running ? 12 : 8.5;
     this.speedX = isLookingLeft ? -base : base;
+
     this.setStopableInterval(() => this.movePhysics(), 1000 / 60);
     this.setStopableInterval(() => this.animateRotation(), 50);
   }
 
   movePhysics() {
     if (this.isSplashed) return;
+
     this.x += this.speedX;
-    if (this.y >= 350) {
+    this.y -= this.speedY;
+    this.speedY -= this.acceleration;
+
+    if (this.y >= 360) {
+      this.y = 360;
       this.splash();
     }
   }

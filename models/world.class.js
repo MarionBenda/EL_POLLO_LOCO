@@ -37,7 +37,7 @@ class World {
   run() {
     this.character.setStopableInterval(() => {
       this.checkCollisions();
-    }, 10);
+    }, 1000 / 60);
 
     this.character.setStopableInterval(() => {
       this.checkThrowObjects();
@@ -48,13 +48,12 @@ class World {
     let timePassed = new Date().getTime() - this.lastThrownTime;
     if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 400) return;
     let left = this.character.otherDirection;
-    let spawnX = left ? this.character.x : this.character.x + 100;
-    let bottle = new ThrowableObject(spawnX, this.character.y + 100, left, this.character.speed);
+    let bottle = new ThrowableObject(left ? this.character.x : this.character.x + 100, this.character.y + 50, left, this.character.speed);
     bottle.world = this;
     bottle.throw(left, this.character.speed);
     this.throwableObject.push(bottle);
     this.collectedBottlesCount--;
-    this.bottleBar.setPercentage((this.collectedBottlesCount / this.totalBottles) * 100);
+    this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : (this.collectedBottlesCount / this.totalBottles) * 100);
     this.lastThrownTime = new Date().getTime();
   }
 
