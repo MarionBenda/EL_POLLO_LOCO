@@ -1,17 +1,32 @@
 html,
-body {
-  overflow: hidden;
+body.impressum-page {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body.impressum-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding-top: 30px;
+  padding-bottom: 40px;
 }
 
 .impressum-area {
   max-width: 850px;
   padding: 20px;
   box-sizing: border-box;
+  margin: 0 auto;
+  width: 100%;
 }
 
 h2 {
   font-family: 'Oi', cursive;
-  font-size: 34px;
+  font-size: clamp(24px, 5vw, 34px); /* Dynamische Skalierung für Mobilgeräte */
   font-weight: lighter;
   color: #ffaa00;
   text-align: center;
@@ -21,7 +36,7 @@ h2 {
 
 h3 {
   font-family: 'Open-sans', cursive;
-  font-size: 22px;
+  font-size: clamp(16px, 4vw, 22px); /* Dynamische Skalierung */
   font-weight: 700;
   color: #ffaa00;
   margin-top: 25px;
@@ -34,16 +49,31 @@ p strong {
 }
 
 p:last-of-type {
-  font-size: 14px;
+  font-size: clamp(12px, 3vw, 14px);
   opacity: 0.85;
 }
 
 p {
   font-family: 'Open-sans', cursive;
-  font-size: 18px;
+  font-size: clamp(14px, 3.5vw, 18px); /* Dynamische Skalierung */
   line-height: 1.6;
   color: #ffffff;
   margin-top: 0;
   margin-bottom: 15px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Saubere Trennung von Inline-Styles für perfekte Daumen-Ergonomie */
+.impressum-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px; /* Puffer nach unten für Mobilgeräte */
+  width: 100%;
+}
+
+.impressum-btn-container .btn-restart {
+  text-decoration: none;
+  text-align: center;
+  min-width: 200px;
 }

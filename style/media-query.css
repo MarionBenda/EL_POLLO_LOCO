@@ -1,4 +1,12 @@
 @media (pointer: coarse) {
+  html,
+  body:not(.impressum-page) {
+    overflow: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+  }
+
   .dynamic-restart {
     bottom: 20%;
   }
@@ -29,6 +37,7 @@
     height: 70px;
     font-size: 28px;
   }
+
   .mobile-impressum-top {
     display: flex;
     position: absolute;

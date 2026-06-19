@@ -123,7 +123,7 @@ h1 {
   align-items: center;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: manipulation;
+  touch-action: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   transition:
     transform 0.1s ease,
@@ -369,4 +369,20 @@ kbd {
 
 .mobile-impressum-top {
   display: none;
+}
+
+.canvas-wrapper .end-screen-menu {
+  display: flex;
+  gap: 20px;
+  width: auto;
+  justify-content: center;
+}
+
+.canvas-wrapper .end-screen-menu .btn-leave {
+  background-color: #555555;
+  border-color: #888888;
+}
+
+.canvas-wrapper .end-screen-menu .btn-leave:hover {
+  background-color: #777777;
 }

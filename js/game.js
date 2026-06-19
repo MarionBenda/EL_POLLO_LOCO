@@ -16,21 +16,16 @@ function init() {
 
 function restartGame() {
   MovableObject.stopAllIntervals();
-  SoundManager.sounds.gameOver.pause();
-  SoundManager.sounds.gameOver.currentTime = 0;
-  SoundManager.sounds.gameWin.pause();
-  SoundManager.sounds.gameWin.currentTime = 0;
+  ['gameOver', 'gameWin'].forEach((soundName) => {
+    SoundManager.sounds[soundName].pause();
+    SoundManager.sounds[soundName].currentTime = 0;
+  });
   SoundManager.playBackground();
-
-  document.getElementById('game-over-screen').classList.add('d-none');
-  document.getElementById('you-won-screen').classList.add('d-none');
-  document.getElementById('restart-container').classList.add('d-none');
-
+  document
+    .querySelectorAll('#game-over-screen, #you-won-screen, #restart-container, #restart-container-desktop')
+    .forEach((element) => element.classList.add('d-none'));
   initLevel();
-
-  setTimeout(() => {
-    world = new World(canvas, keyboard);
-  }, 50);
+  setTimeout(() => (world = new World(canvas, keyboard)), 50);
 }
 
 function toggleFullscreen() {
@@ -42,8 +37,8 @@ function toggleFullscreen() {
   }
 }
 
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'KeyF' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+window.addEventListener('keydown', (event) => {
+  if (event.code === 'KeyF' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
     toggleFullscreen();
   }
 });

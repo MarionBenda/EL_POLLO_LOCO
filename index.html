@@ -66,15 +66,16 @@
           <button id="SPACE" class="mobile-btn action-btn">▲</button>
         </div>
       </div>
-
-      <div id="restart-container" class="d-none dynamic-restart">
-        <button class="btn-restart" onclick="restartGame()">TRY AGAIN</button>
+      <div id="restart-container" class="d-none dynamic-restart end-screen-menu">
+        <button class="btn-restart" onclick="restartGame()">AGAIN</button>
+        <button class="btn-restart btn-leave" onclick="window.location.reload()">LEAVE</button>
       </div>
     </div>
 
     <div class="game-controls-bottom">
-      <div id="restart-container" class="d-none">
-        <button class="btn-restart" onclick="restartGame()">TRY AGAIN</button>
+      <div id="restart-container-desktop" class="d-none dynamic-restart end-screen-menu">
+        <button class="btn-restart" onclick="restartGame()">AGAIN</button>
+        <button class="btn-restart btn-leave" onclick="window.location.reload()">LEAVE</button>
       </div>
 
       <div class="fullscreen-container">

@@ -5,5 +5,5 @@
 
 @font-face {
   font-family: 'Open-sans';
-  src: url('./fonts/Oi/Oi-Regular.ttf');
+  src: url('../fonts/open-sans/static/OpenSans-Regular.ttf');
 }
