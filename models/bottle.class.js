@@ -7,12 +7,22 @@ class Bottle extends MovableObject {
   width = 60;
   height = 80;
 
+  /**
+   * Create a bottle at given x and type (in air or on ground).
+   * @param {number} x - X position of the bottle.
+   * @param {boolean} isInAir - Whether the bottle is spawned in the air.
+   */
   constructor(x, isInAir) {
     super();
+    this.loadImages(this.IMAGES_BOTTLES); // <-- Diese Zeile hat gefehlt!
     this.x = x;
     this.setupBottleType(isInAir);
   }
 
+  /**
+   * Set bottle sprite and vertical position based on type.
+   * @param {boolean} isInAir - If true use flying bottle image.
+   */
   setupBottleType(isInAir) {
     if (isInAir) {
       this.loadImage(this.IMAGES_BOTTLES[2]);

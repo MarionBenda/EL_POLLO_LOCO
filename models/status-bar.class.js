@@ -21,12 +21,19 @@ class StatusBar extends DrawableObject {
     }
   }
 
+  /**
+   * Set the displayed percentage and update the bar image.
+   * @param {number} percentage - Percentage value (0-100).
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.IMAGES[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Trigger a short blinking effect on the status bar.
+   */
   playBlinkEffect() {
     this.isBlinking = true;
     setTimeout(() => {

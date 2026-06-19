@@ -16,6 +16,9 @@ class MovableObject extends DrawableObject {
   }
 
   static stopAllIntervals() {
+    /**
+     * Clear all stored intervals and reset game over flag.
+     */
     MovableObject.intervalIds.forEach(clearInterval);
     MovableObject.intervalIds.length = 0;
     MovableObject.gameIsOver = false;
@@ -48,15 +51,22 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
+    /**
+     * Apply damage to this object and record the hit timestamp.
+     */
     this.energy -= 5;
     if (this.energy < 0) {
       this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime();
     }
+    this.lastHit = new Date().getTime();
   }
 
+  /**
+   * Return whether the object was hit recently (within 500ms).
+   * @returns {boolean}
+   */
   isHurt() {
+    if (this.lastHit === 0) return false;
     let timepassed = new Date().getTime() - this.lastHit;
 
     return timepassed < 500;
@@ -76,14 +86,17 @@ class MovableObject extends DrawableObject {
   }
 
   moveRight() {
+    /** Move object to the right by its speed. */
     this.x += this.speed;
   }
 
   moveLeft() {
+    /** Move object to the left by its speed. */
     this.x -= this.speed;
   }
 
   jump() {
+    /** Set upward velocity for jump. */
     this.speedY = 30;
   }
 }

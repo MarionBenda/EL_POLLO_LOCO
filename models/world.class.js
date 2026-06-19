@@ -24,16 +24,27 @@ class World {
     this.totalCoins = this.level.coins.length;
     this.totalBottles = this.level.bottles.length;
     this.level.enemies.forEach((enemy) => (enemy.world = this));
+    /**
+     * Initialize world rendering and start main loops.
+     * @param {HTMLCanvasElement} canvas - Canvas element used for drawing.
+     * @param {Keyboard} keyboard - Keyboard input state object.
+     */
     this.draw();
     this.setWorld();
     this.run();
   }
 
+  /**
+   * Attach world reference to the character and start animations.
+   */
   setWorld() {
     this.character.world = this;
     this.character.animate();
   }
 
+  /**
+   * Start periodic game logic tasks (collision & throwing).
+   */
   run() {
     this.character.setStopableInterval(() => {
       this.checkCollisions();
@@ -44,6 +55,9 @@ class World {
     }, 1000 / 60);
   }
 
+  /**
+   * Handle player throwing bottles when input and cooldown allow.
+   */
   checkThrowObjects() {
     let timePassed = new Date().getTime() - this.lastThrownTime;
     if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 400) return;
@@ -57,12 +71,18 @@ class World {
     this.lastThrownTime = new Date().getTime();
   }
 
+  /**
+   * Run all collision checks each frame.
+   */
   checkCollisions() {
     this.checkEnemyCollisions();
     this.checkCoinCollisions();
     this.checkBottleCollisions();
   }
 
+  /**
+   * Check and resolve collisions between the character and enemies.
+   */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
@@ -81,6 +101,9 @@ class World {
     });
   }
 
+  /**
+   * Collect coins when the character collides with them.
+   */
   checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
@@ -94,6 +117,9 @@ class World {
     });
   }
 
+  /**
+   * Collect bottles when the character collides with them.
+   */
   checkBottleCollisions() {
     this.level.bottles.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
@@ -107,6 +133,10 @@ class World {
     });
   }
 
+  /**
+   * Detect thrown bottle hits against an enemy and apply effects.
+   * @param {Object} enemy - Enemy object to test collisions with.
+   */
   checkBottleHitsEnemy(enemy) {
     this.throwableObject.forEach((bottle) => {
       if (!bottle.isSplashed && !enemy.isDead && bottle.isColliding(enemy)) {
@@ -123,6 +153,9 @@ class World {
     });
   }
 
+  /**
+   * Main draw loop: clear canvas, translate camera and render scene.
+   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
@@ -133,6 +166,9 @@ class World {
     requestAnimationFrame(() => self.draw());
   }
 
+  /**
+   * Add all level objects to the rendering queue.
+   */
   addLevelObjects() {
     this.addObjectsToMap(this.level.backgroundObject);
     this.addObjectsToMap(this.level.clouds);
@@ -143,6 +179,9 @@ class World {
     this.addToMap(this.character);
   }
 
+  /**
+   * Draw status bars (health, coins, bottles, boss) on the HUD.
+   */
   addStatusBars() {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
@@ -156,10 +195,18 @@ class World {
     }
   }
 
+  /**
+   * Add an array of objects to the map rendering.
+   * @param {Array} objects - Array of drawable objects.
+   */
   addObjectsToMap(objects) {
     objects.forEach((object) => this.addToMap(object));
   }
 
+  /**
+   * Draw a movable object on the canvas with flipping and blink handling.
+   * @param {MovableObject} mo - Movable object to draw.
+   */
   addToMap(mo) {
     if (!mo) return;
     if (mo.otherDirection) this.flipImage(mo);
@@ -170,6 +217,10 @@ class World {
     if (mo.otherDirection) this.flipImageBack(mo);
   }
 
+  /**
+   * Flip drawing context horizontally for objects facing left.
+   * @param {MovableObject} mo - Movable object whose image to flip.
+   */
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -177,6 +228,10 @@ class World {
     mo.x = mo.x * -1;
   }
 
+  /**
+   * Restore drawing context after horizontal flip.
+   * @param {MovableObject} mo - Movable object to restore position for.
+   */
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();

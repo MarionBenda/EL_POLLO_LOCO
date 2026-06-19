@@ -6,7 +6,11 @@ class Keyboard {
   SPACE = false;
   D = false;
 
+  /**
+   * Bind keyboard keydown/keyup events to update state flags.
+   */
   bindKeyPressEvents() {
+    // Arrow keys, Space and D key mapping
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowRight') this.RIGHT = true;
       if (e.code === 'ArrowLeft') this.LEFT = true;
@@ -26,44 +30,19 @@ class Keyboard {
     });
   }
 
+  /**
+   * Bind touch events for mobile controls to update state flags.
+   */
+  // prettier-ignore
   bindTouchEvents() {
-    [
-      { id: 'LEFT', key: 'LEFT' },
-      { id: 'RIGHT', key: 'RIGHT' },
-      { id: 'SPACE', key: 'SPACE' },
-      { id: 'D', key: 'D' },
-    ].forEach((btn) => {
-      const el = document.getElementById(btn.id);
-      if (!el) return;
-      el.addEventListener(
-        'touchstart',
-        (e) => {
-          if (!document.getElementById('start-dialog').classList.contains('d-none')) return;
-          e.preventDefault();
-          this[btn.key] = true;
-        },
-        { passive: false },
-      );
-      el.addEventListener(
-        'touchend',
-        (e) => {
-          e.preventDefault();
-          this[btn.key] = false;
-        },
-        { passive: false },
-      );
-      el.addEventListener(
-        'touchcancel',
-        (e) => {
-          e.preventDefault();
-          this[btn.key] = false;
-        },
-        { passive: false },
-      );
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-    });
-  }
+  ['LEFT', 'RIGHT', 'SPACE', 'D'].forEach(key => {
+    const el = document.getElementById(key);
+    if (!el) return;
+    el.addEventListener('touchstart', event => {
+      if (document.getElementById('start-dialog').classList.contains('d-none')) { event.preventDefault(); this[key] = true; }
+    }, { passive: false });
+    ['touchend', 'touchcancel'].forEach(evt => el.addEventListener(evt, event => { event.preventDefault(); this[key] = false; }, { passive: false }));
+    el.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); });
+  });
+}
 }

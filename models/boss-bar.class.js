@@ -10,6 +10,9 @@ class BossHealthBar extends StatusBar {
 
   constructor() {
     super();
+    /**
+     * Initialize boss health bar images and default position.
+     */
     this.loadImages(this.IMAGES);
     this.x = 250;
     this.y = 10;

@@ -31,6 +31,10 @@ class Endboss extends MovableObject {
   IMAGES_HURTS = ['img/4_enemie_boss_chicken/4_hurt/G21.png', 'img/4_enemie_boss_chicken/4_hurt/G22.png', 'img/4_enemie_boss_chicken/4_hurt/G23.png'];
   IMAGES_DEAD = ['img/4_enemie_boss_chicken/5_dead/G24.png', 'img/4_enemie_boss_chicken/5_dead/G25.png', 'img/4_enemie_boss_chicken/5_dead/G26.png'];
 
+  /**
+   * Create an Endboss at given x position and preload animations.
+   * @param {number} x - Starting X position for the boss.
+   */
   constructor(x) {
     super();
     this.loadImage('img/4_enemie_boss_chicken/1_walk/G1.png');
@@ -46,11 +50,17 @@ class Endboss extends MovableObject {
   }
 
   animate() {
+    /**
+     * Start periodic boss movement and animation loops.
+     */
     this.setStopableInterval(() => this.moveBoss(), 1000 / 60);
     this.setStopableInterval(() => this.playBossAnimations(), 200);
   }
 
   moveBoss() {
+    /**
+     * Update boss movement state (patrol, enraged, return).
+     */
     if (this.isDead) return;
     if (this.isEnraged) {
       this.x += (this.rageDirection === 'left' ? -1 : 1) * (this.speed * 3.5);
@@ -71,6 +81,9 @@ class Endboss extends MovableObject {
   }
 
   playBossAnimations() {
+    /**
+     * Choose appropriate animation based on boss state.
+     */
     if (this.isDead) {
       this.handleBossDeath();
     } else if (this.isHurtStatus) {
@@ -83,6 +96,9 @@ class Endboss extends MovableObject {
   }
 
   handleBossDeath() {
+    /**
+     * Play death animation and trigger win when finished.
+     */
     if (this.deadAnimationPlayed) return;
     this.playAnimation(this.IMAGES_DEAD);
     if (this.currentImage >= this.IMAGES_DEAD.length) {
@@ -92,6 +108,9 @@ class Endboss extends MovableObject {
   }
 
   showYouWon() {
+    /**
+     * Display 'you won' UI and stop the game.
+     */
     MovableObject.gameIsOver = true;
     document.getElementById('you-won-screen').classList.remove('d-none');
     document.getElementById('restart-container').classList.remove('d-none');
@@ -99,6 +118,9 @@ class Endboss extends MovableObject {
   }
 
   bossHit() {
+    /**
+     * Apply damage to boss, set hurt/enraged state and schedule behavior.
+     */
     this.energy -= 20;
     if (this.energy <= 0) {
       this.energy = 0;

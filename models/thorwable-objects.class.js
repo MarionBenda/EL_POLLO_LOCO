@@ -49,6 +49,11 @@ class ThrowableObject extends MovableObject {
     ctx.restore();
   }
 
+  /**
+   * Launch the throwable object with initial velocity and animations.
+   * @param {boolean} isLookingLeft - Direction the character is facing.
+   * @param {number} characterSpeed - Current character speed affecting throw.
+   */
   throw(isLookingLeft, characterSpeed) {
     let isJumping = this.world?.character?.isAboveGround();
     let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
@@ -69,6 +74,9 @@ class ThrowableObject extends MovableObject {
     this.setStopableInterval(() => this.animateRotation(), 50);
   }
 
+  /**
+   * Update physics for the thrown object (position, gravity, splash).
+   */
   movePhysics() {
     if (this.isSplashed) return;
 
@@ -82,11 +90,18 @@ class ThrowableObject extends MovableObject {
     }
   }
 
+  /**
+   * Animate the bottle rotation while in flight.
+   */
   animateRotation() {
     if (this.isSplashed) return;
     this.playAnimation(this.IMAGES_ROTATING);
   }
 
+  /**
+   * Play splash animation and optionally align splash to an enemy.
+   * @param {Object|null} enemy - Enemy to align splash with.
+   */
   splash(enemy = null) {
     SoundManager.sounds.bottleBreak.currentTime = 0;
     SoundManager.sounds.bottleBreak.play();

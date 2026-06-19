@@ -5,6 +5,10 @@ class Coins extends MovableObject {
 
   constructor(x) {
     super();
+    /**
+     * Create a coin at the given x position and start spinning animation.
+     * @param {number} x - X position of the coin.
+     */
     this.loadImage('img/8_coin/coin_1.png');
     this.loadImages(this.IMAGES_SPINNING);
     this.x = x;
@@ -13,6 +17,9 @@ class Coins extends MovableObject {
   }
 
   animate() {
+    /**
+     * Start periodic spinning animation for the coin.
+     */
     this.setStopableInterval(() => this.playAnimation(this.IMAGES_SPINNING), 200);
   }
 }

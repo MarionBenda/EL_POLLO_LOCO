@@ -1,3 +1,4 @@
+// On DOM ready: ensure dialog sound starts and resumes on first user click.
 window.addEventListener('DOMContentLoaded', () => {
   SoundManager.startDialogSound();
 
@@ -19,6 +20,10 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 });
 
+/**
+ * Close the start dialog overlay, stop dialog audio and start the game.
+ * @param {MouseEvent|TouchEvent} event - The triggering event from click/tap.
+ */
 function closeStartDialog(event) {
   const dialogOverlay = document.getElementById('start-dialog');
   const dialogContent = document.querySelector('.dialog-content');
