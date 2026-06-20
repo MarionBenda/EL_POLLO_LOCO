@@ -32,10 +32,8 @@ function closeStartDialog(event) {
   if (dialogContent.contains(clickedElement) && !clickedElement.classList.contains('btn-restart')) {
     return;
   }
-
   SoundManager.stopDialogSound();
   SoundManager.playBackground();
-
   dialogOverlay.classList.add('d-none');
 
   if (typeof init === 'function') {

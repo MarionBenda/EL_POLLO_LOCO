@@ -1,3 +1,35 @@
+.controls-mobile {
+  display: none;
+}
+
+.controls-desktop {
+  display: block;
+}
+
+.dialog-content {
+  position: relative;
+}
+
+.dialog-header h2 {
+  font-size: 20;
+  padding-top: 15px;
+}
+
+.dialog-impressum-link {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  color: rgba(255, 170, 0, 0.8);
+  font-family: inherit;
+  transition: color 0.175ms ease;
+}
+
+.dialog-impressum-link:hover {
+  color: rgba(255, 200, 0, 1);
+}
+
 @media (pointer: coarse) {
   html,
   body:not(.impressum-page) {
@@ -5,6 +37,14 @@
     position: fixed;
     width: 100vw;
     height: 100vh;
+  }
+
+  .controls-desktop {
+    display: none;
+  }
+
+  .controls-mobile {
+    display: block;
   }
 
   .dynamic-restart {
@@ -54,6 +94,16 @@
     text-decoration: none;
     font-size: 18px;
     pointer-events: auto;
+  }
+
+  .dialog-impressum-link {
+    top: 10px;
+    right: 15px;
+    font-size: 12px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 170, 0, 0.3);
   }
 }
 

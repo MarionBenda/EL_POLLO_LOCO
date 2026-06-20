@@ -5,7 +5,14 @@ class StatusBar extends DrawableObject {
   x = 5;
   percentage = 100;
 
+  /**
+   * Map the current percentage value to the corresponding status bar image index.
+   * @returns {number} An image index integer from 0 to 5.
+   */
   resolveImageIndex() {
+    if (this.percentage <= 0) {
+      return 0;
+    }
     if (this.percentage == 100) {
       return 5;
     } else if (this.percentage > 80) {
@@ -14,7 +21,7 @@ class StatusBar extends DrawableObject {
       return 3;
     } else if (this.percentage > 40) {
       return 2;
-    } else if (this.percentage > 20) {
+    } else if (this.percentage > 0) {
       return 1;
     } else {
       return 0;

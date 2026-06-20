@@ -9,7 +9,7 @@ class Coins extends MovableObject {
    */
   constructor(x) {
     super();
-
+    this.offset = { top: 35, bottom: 35, left: 35, right: 35 };
     this.loadImage('img/8_coin/coin_1.png');
     this.loadImages(this.IMAGES_SPINNING);
     this.x = x;

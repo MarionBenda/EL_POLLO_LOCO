@@ -2,6 +2,10 @@ const REPEAT_COUNT = 18;
 const BG_WIDTH = 720;
 const LEVEL_END_X = (REPEAT_COUNT - 1) * BG_WIDTH;
 
+/**
+ * Generate layered background objects for the level.
+ * @returns {BackgroundObject[]} Array of background layers.
+ */
 function createBackgrounds() {
   let backgrounds = [];
   for (let i = 0; i < REPEAT_COUNT; i++) {
@@ -15,6 +19,10 @@ function createBackgrounds() {
   return backgrounds;
 }
 
+/**
+ * Generate standard enemies and place the end boss.
+ * @returns {Array} Array containing chicken variants and the end boss.
+ */
 function createLevelEnemies() {
   let enemies = [];
   let stopX = LEVEL_END_X - 200;
@@ -28,11 +36,14 @@ function createLevelEnemies() {
       enemies.push(new SmallChicken(randomX));
     }
   }
-
   enemies.push(new Endboss(LEVEL_END_X + 200));
   return enemies;
 }
 
+/**
+ * Spawn collectible coins at intervals across the level.
+ * @returns {Coins[]} Array of coin objects.
+ */
 function createLevelCoins() {
   let coins = [];
   let stopX = LEVEL_END_X - 500;
@@ -42,6 +53,10 @@ function createLevelCoins() {
   return coins;
 }
 
+/**
+ * Spawn collectable bottles, alternating between ground and air.
+ * @returns {Bottle[]} Array of bottle objects.
+ */
 function createLevelBottle() {
   let bottles = [];
   let stopX = LEVEL_END_X - 500;
@@ -57,6 +72,9 @@ function createLevelBottle() {
 
 let level1;
 
+/**
+ * Instantiate Level 1 with all generated game entities.
+ */
 function initLevel() {
   level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins(), createLevelBottle());
   level1.level_end_x = LEVEL_END_X;

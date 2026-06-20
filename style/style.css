@@ -232,10 +232,11 @@ h1 {
   font-family: 'Oi', cursive;
   color: #ffaa00;
   margin-top: 0;
-  font-size: clamp(22px, 4vw, 36px);
+  font-size: clamp(18px, 4vw, 26px);
   margin-bottom: 10px;
   font-weight: lighter;
 }
+
 .dialog-story h3,
 .dialog-enemies h3 {
   font-family: 'Oi', cursive;
@@ -246,6 +247,7 @@ h1 {
   text-align: left;
   font-weight: lighter;
 }
+
 .dialog-story p {
   font-size: 16px;
   line-height: 1.6;
@@ -253,6 +255,7 @@ h1 {
   color: #ffffff;
   margin-bottom: 6px;
 }
+
 .dialog-enemies {
   display: flex;
   flex-direction: column;
@@ -260,6 +263,7 @@ h1 {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
 .enemy-card {
   display: flex;
   align-items: center;
@@ -269,6 +273,7 @@ h1 {
   border-left: 5px solid #ffaa00;
   text-align: left;
 }
+
 .enemy-icon {
   display: flex;
   align-items: center;
@@ -279,12 +284,14 @@ h1 {
   margin-right: 20px;
   overflow: hidden;
 }
+
 .enemy-icon img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
 }
+
 .enemy-card p {
   margin: 0;
   font-size: 16px;
@@ -292,15 +299,18 @@ h1 {
   color: #ffffff;
   flex-grow: 1;
 }
+
 .enemy-card strong {
   color: #ffaa00;
 }
+
 .controls-box {
   border: 2px solid #ffaa00;
   border-radius: 10px;
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 .controls-box legend {
   font-family: 'Oi', cursive;
   color: #ffaa00;
@@ -309,22 +319,26 @@ h1 {
   letter-spacing: 1px;
   font-weight: lighter;
 }
+
 .controls-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .control-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-align: left;
 }
+
 .keys-container {
   display: flex;
   gap: 8px;
   min-width: 140px;
 }
+
 kbd {
   display: inline-flex;
   align-items: center;
@@ -346,9 +360,11 @@ kbd {
   height: 24px;
   line-height: 1;
 }
+
 .space-key {
   min-width: 100px;
 }
+
 .control-action {
   font-family: 'Segoe UI', Arial, sans-serif;
   font-size: 18px;
@@ -385,4 +401,42 @@ kbd {
 
 .canvas-wrapper .end-screen-menu .btn-leave:hover {
   background-color: #777777;
+}
+
+.dialog-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.dialog-impressum-link {
+  justify-self: end;
+  text-decoration: none;
+  font-size: 14px;
+  color: #ffaa00;
+  font-family: inherit;
+  background-color: rgba(255, 170, 0, 0.1);
+  padding: 6px 5px;
+  border: 2px solid #ffaa00;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.dialog-impressum-link:hover {
+  background-color: rgba(255, 170, 0, 0.25);
+}
+
+.dialog-impressum-link:active {
+  transform: scale(0.95);
+}
+
+.dialog-content .dialog-header h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
+  width: 100%;
 }

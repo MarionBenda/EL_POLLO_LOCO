@@ -71,4 +71,32 @@ class SoundManager {
     this.isMuted = !this.isMuted;
     this.sounds.background.muted = this.isMuted;
   }
+
+  /**
+   * Mutes all sounds instantly and pauses playing ones.
+   */
+  static muteAllSounds() {
+    this.isMuted = true;
+    Object.values(this.sounds).forEach((sound) => {
+      sound.muted = true;
+      sound.pause();
+    });
+  }
+
+  /**
+   * Unmute all game sounds and ensure the background music resumes playing.
+   */
+  static unmuteAllSounds() {
+    this.isMuted = false;
+    Object.values(this.sounds).forEach((sound) => {
+      sound.muted = false;
+    });
+
+    if (this.sounds && this.sounds.background) {
+      this.sounds.background.volume = 0.15;
+      this.sounds.background.play().catch((e) => {
+        console.log('Hintergrundmusik wartet auf User-Interaktion:', e);
+      });
+    }
+  }
 }

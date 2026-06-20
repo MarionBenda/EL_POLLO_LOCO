@@ -67,15 +67,10 @@ class Endboss extends MovableObject {
       this.otherDirection = this.rageDirection === 'right';
     } else if (this.isReturning) {
       let dist = this.returnX - this.x;
-      if (Math.abs(dist) < 10) this.isReturning = false;
-      else {
-        this.x += Math.sign(dist) * (this.speed * 2);
-        this.otherDirection = dist > 0;
-      }
+      Math.abs(dist) < 10 ? (this.isReturning = false) : ((this.x += Math.sign(dist) * (this.speed * 2)), (this.otherDirection = dist > 0));
     } else if (!this.isHurtStatus) {
+      this.movingLeft = this.x < this.startX - this.patrolRange ? false : this.x > this.startX ? true : this.movingLeft;
       this.x += this.movingLeft ? -this.speed : this.speed;
-      if (this.x < this.startX - this.patrolRange) this.movingLeft = false;
-      if (this.x > this.startX) this.movingLeft = true;
       this.otherDirection = !this.movingLeft;
     }
   }
@@ -121,7 +116,7 @@ class Endboss extends MovableObject {
    * Apply damage to boss, set hurt/enraged state and schedule behavior.
    */
   bossHit() {
-    this.energy = Math.max(0, this.energy - 20);
+    this.energy = Math.max(0, this.energy - 10);
     if (this.energy === 0) return Object.assign(this, { isDead: true, currentImage: 0 });
 
     this.isHurtStatus = true;
@@ -132,6 +127,9 @@ class Endboss extends MovableObject {
     this.triggerRageTimers();
   }
 
+  /**
+   * Schedule boss phase transitions from hurt to enraged, then back to returning.
+   */
   triggerRageTimers() {
     setTimeout(() => Object.assign(this, { isHurtStatus: false, isEnraged: true }), 400);
     setTimeout(() => Object.assign(this, { isEnraged: false, isReturning: true }), 1200);

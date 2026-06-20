@@ -16,6 +16,11 @@ class World {
   totalBottles = 0;
   lastThrownTime = 0;
 
+  /**
+   * Initialize world rendering and start main loops.
+   * @param {HTMLCanvasElement} canvas - Canvas element used for drawing.
+   * @param {Keyboard} keyboard - Keyboard input state object.
+   */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
@@ -23,11 +28,6 @@ class World {
     this.totalCoins = this.level.coins.length;
     this.totalBottles = this.level.bottles.length;
     this.level.enemies.forEach((enemy) => (enemy.world = this));
-    /**
-     * Initialize world rendering and start main loops.
-     * @param {HTMLCanvasElement} canvas - Canvas element used for drawing.
-     * @param {Keyboard} keyboard - Keyboard input state object.
-     */
     this.draw();
     this.setWorld();
     this.run();
@@ -59,7 +59,7 @@ class World {
    */
   checkThrowObjects() {
     let timePassed = new Date().getTime() - this.lastThrownTime;
-    if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 400) return;
+    if (MovableObject.gameIsOver || !this.keyboard.D || this.collectedBottlesCount <= 0 || timePassed <= 1000) return;
     let left = this.character.otherDirection;
     let bottle = new ThrowableObject(left ? this.character.x : this.character.x + 100, this.character.y + 50, left, this.character.speed);
     bottle.world = this;
@@ -144,6 +144,7 @@ class World {
         if (isBoss) {
           enemy.bossHit();
           this.bossBar.setPercentage(enemy.energy);
+          this.bossBar.playBlinkEffect();
         } else {
           enemy.kill();
         }
@@ -182,6 +183,9 @@ class World {
    * Draw status bars (health, coins, bottles, boss) on the HUD.
    */
   addStatusBars() {
+    if (this.character && this.character.energy <= 0) {
+      this.statusBar.setPercentage(0);
+    }
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);

@@ -20,6 +20,13 @@ class ThrowableObject extends MovableObject {
     'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png',
   ];
 
+  /**
+   * Create a throwable bottle, configure physics offsets, load textures, and trigger the throw sound.
+   * @param {number} x - The initial horizontal position.
+   * @param {number} y - The initial vertical position.
+   * @param {boolean} isLookingLeft - Direction flag indicating if the bottle travels left.
+   * @param {number} characterSpeed - The current speed of the throwing character.
+   */
   constructor(x, y, isLookingLeft, characterSpeed) {
     super();
     this.x = x;
@@ -42,6 +49,10 @@ class ThrowableObject extends MovableObject {
     SoundManager.sounds.throwBottle.play();
   }
 
+  /**
+   * Render the object on the canvas with isolated transparency states.
+   * @param {CanvasRenderingContext2D} ctx - The local canvas rendering context.
+   */
   draw(ctx) {
     ctx.save();
     ctx.globalAlpha = 1;

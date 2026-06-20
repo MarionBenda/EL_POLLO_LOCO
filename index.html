@@ -86,7 +86,10 @@
 
     <section id="start-dialog" class="dialog-overlay" onclick="closeStartDialog(event)">
       <div class="dialog-content">
-        <h2>Welcome to El Pollo Loco!</h2>
+        <header class="dialog-header">
+          <a href="./impressum.html" class="dialog-impressum-link">⚖️</a>
+          <h2>Welcome to El Pollo Loco!</h2>
+        </header>
         <div class="dialog-story">
           <h3>Die Story</h3>
           <p>
@@ -115,8 +118,8 @@
           </div>
         </div>
 
-        <fieldset class="controls-box">
-          <legend>Steuerung</legend>
+        <fieldset class="controls-box controls-desktop">
+          <legend>Steuerung (PC)</legend>
           <div class="controls-grid">
             <div class="control-row">
               <div class="keys-container"><kbd>←</kbd><kbd>→</kbd></div>
@@ -138,6 +141,27 @@
             </div>
           </div>
         </fieldset>
+
+        <fieldset class="controls-box controls-mobile">
+          <legend>Steuerung (Touch)</legend>
+          <div class="controls-grid">
+            <div class="control-row">
+              <div class="keys-container">Buttons <kbd>◀</kbd> <kbd>▶</kbd></div>
+              <span class="control-action">Laufen</span>
+            </div>
+
+            <div class="control-row">
+              <div class="keys-container">Button <kbd>▲</kbd></div>
+              <span class="control-action">Springen</span>
+            </div>
+
+            <div class="control-row">
+              <div class="keys-container">Button <kbd>D</kbd></div>
+              <span class="control-action">Flasche werfen</span>
+            </div>
+          </div>
+        </fieldset>
+
         <button
           class="btn-restart"
           onclick="

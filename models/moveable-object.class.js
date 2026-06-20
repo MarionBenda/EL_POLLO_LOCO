@@ -10,6 +10,11 @@ class MovableObject extends DrawableObject {
 
   offset = { top: 0, bottom: 0, left: 0, right: 0 };
 
+  /**
+   * Start a stoppable interval and track its ID.
+   * @param {Function} callbackFunction - The function to execute.
+   * @param {number} time - Delay in milliseconds.
+   */
   setStopableInterval(callbackFunction, time) {
     let id = setInterval(callbackFunction, time);
     MovableObject.intervalIds.push(id);
@@ -24,6 +29,9 @@ class MovableObject extends DrawableObject {
     MovableObject.gameIsOver = false;
   }
 
+  /**
+   * Apply constant gravity to the object using a periodic interval.
+   */
   applyGravity() {
     this.setStopableInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -36,11 +44,20 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  /**
+   * Determine if the object is currently in the air.
+   * @returns {boolean|undefined} True if the object is above its ground level.
+   */
   isAboveGround() {
     if (this instanceof ThrowableObject) return true;
     if (this instanceof Character) return this.y < 150;
   }
 
+  /**
+   * Detect an axis-aligned bounding box collision with another movable object, incorporating offsets.
+   * @param {MovableObject} mo - The other movable object to check collision against.
+   * @returns {boolean} True if the objects overlap, otherwise false.
+   */
   isColliding(mo) {
     return (
       this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
@@ -70,9 +87,19 @@ class MovableObject extends DrawableObject {
     let timePassed = new Date().getTime() - this.lastHit;
     return timePassed < 500;
   }
+
+  /**
+   * Check if the object's energy has reached zero.
+   * @returns {boolean} True if dead, otherwise false.
+   */
   isDead() {
     return this.energy == 0;
   }
+
+  /**
+   * Cycle through an array of images to play a continuous animation.
+   * @param {string[]} images - Array of image paths to be animated.
+   */
   playAnimation(images) {
     let index = this.currentImage % images.length;
     let path = images[index];

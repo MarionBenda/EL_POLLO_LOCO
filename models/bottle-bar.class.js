@@ -8,11 +8,11 @@ class BottleBar extends StatusBar {
     'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png',
   ];
 
+  /**
+   * Initialize bottle bar images and default percentage.
+   */
   constructor() {
     super();
-    /**
-     * Initialize bottle bar images and default percentage.
-     */
     this.loadImages(this.IMAGES);
     this.y = 100;
     this.setPercentage(0);
