@@ -85,19 +85,18 @@ class World {
   }
 
   /**
-   * Process enemy damage states and handle precise top-down jumping responses.
+   * Handle character collisions with enemies for bouncing or taking damage.
    */
   checkEnemyCollisions() {
-    let hasBounced = false;
     this.level.enemies.forEach((enemy) => {
       this.checkBottleHitsEnemy(enemy);
-      if (enemy.isDead || !this.character.isColliding(enemy)) return;
+      if (enemy.y < 0 || enemy.isDead) return;
       if (this.character.isFallingOnto(enemy) && !(enemy instanceof Endboss)) {
-        if (typeof enemy.kill === 'function') enemy.kill();
+        enemy.kill();
         SoundManager.playSound('chickenDead');
-        this.character.jump(28);
-        hasBounced = true;
-      } else if (!this.character.isHurt() && !hasBounced) {
+        return this.character.bounceJump();
+      }
+      if (this.character.isColliding(enemy) && !this.character.isHurt()) {
         this.executeCharacterDamage();
       }
     });

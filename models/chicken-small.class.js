@@ -60,14 +60,14 @@ class SmallChicken extends MovableObject {
    * Disable enemy physics, freeze active animations, and remove after a delay.
    */
   kill() {
+    if (this.isDead) return;
     this.isDead = true;
     this.speed = 0;
-    this.width = 80;
-    this.height = 80;
-    this.offset = { top: 15, bottom: 10, left: 15, right: 15 };
     this.img = this.imageCache[this.IMAGE_DEAD];
+    this.height = 40;
+    this.y = this.y + 40;
+    this.offset = { top: 9999, bottom: 9999, left: 9999, right: 9999 };
     this.playAnimation = function () {};
-
     setTimeout(() => {
       this.y = -9999;
     }, 1000);

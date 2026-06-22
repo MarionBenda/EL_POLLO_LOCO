@@ -2,7 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
-window.DEBUG_MODE = true;
+window.DEBUG_MODE = false;
 
 /**
  * Initializes the canvas, levels, input bindings, and game world.

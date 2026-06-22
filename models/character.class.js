@@ -203,4 +203,12 @@ class Character extends MovableObject {
     this.y -= 25;
     this.currentImage = 0;
   }
+
+  /**
+   * Trigger a vertical bounce impulse by resetting velocity and animation.
+   */
+  bounceJump() {
+    this.speedY = 28;
+    this.currentImage = 0;
+  }
 }

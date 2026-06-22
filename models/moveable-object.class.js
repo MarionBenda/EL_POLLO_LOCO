@@ -54,19 +54,17 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Determines if this object is falling downward onto the top zone of another object.
-   * @param {MovableObject} mo - The target object to check against.
-   * @returns {boolean} True if falling onto the target, otherwise false.
+   * Check if this object is falling directly onto another object from above.
+   * @param {MovableObject} mo - Target object.
+   * @returns {boolean} True if landing on target, false otherwise.
    */
   isFallingOnto(mo) {
-    if (this.speedY >= 0) return false;
-
+    if (this.speedY > 5) return false;
     let charBottom = this.y + this.height - this.offset.bottom;
     let enemyTop = mo.y + mo.offset.top;
-    let enemyHeight = mo.height - mo.offset.top - mo.offset.bottom;
-    let finalHitZone = (enemyTop + enemyHeight) * 1.15;
-
-    return charBottom < finalHitZone && this.isColliding(mo);
+    let horOverlap = this.x + this.width - this.offset.right > mo.x + mo.offset.left && this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
+    let vertClose = charBottom <= enemyTop + 35 && charBottom >= enemyTop - 10;
+    return horOverlap && vertClose;
   }
 
   /**
