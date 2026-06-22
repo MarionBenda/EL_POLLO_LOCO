@@ -90,6 +90,7 @@ class World {
   checkEnemyCollisions() {
     let hasBounced = false;
     this.level.enemies.forEach((enemy) => {
+      this.checkBottleHitsEnemy(enemy);
       if (enemy.isDead || !this.character.isColliding(enemy)) return;
       if (this.character.isFallingOnto(enemy) && !(enemy instanceof Endboss)) {
         if (typeof enemy.kill === 'function') enemy.kill();
