@@ -11,7 +11,7 @@
 }
 
 .dialog-header h2 {
-  font-size: 20;
+  font-size: 20px;
   padding-top: 15px;
 }
 
@@ -76,6 +76,13 @@
     width: 70px;
     height: 70px;
     font-size: 28px;
+  }
+
+  .dialog-mute-btn {
+    top: 10px;
+    left: 15px;
+    font-size: 18px;
+    padding: 4px 4px;
   }
 
   .mobile-impressum-top {

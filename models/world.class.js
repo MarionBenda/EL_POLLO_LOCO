@@ -10,6 +10,7 @@ class World {
   bottleBar = new BottleBar();
   bossBar = new BossHealthBar();
   throwableObject = [];
+  deadEnemies = [];
   collectedCoinsCount = 0;
   totalCoins = 0;
   collectedBottlesCount = 0;
@@ -27,12 +28,15 @@ class World {
     this.keyboard = keyboard;
     this.totalCoins = this.level.coins.length;
     this.totalBottles = this.level.bottles.length;
-    this.level.enemies.forEach((enemy) => (enemy.world = this));
+    // Weist jedem Huhn eine eindeutige Nummer zu
+    this.level.enemies.forEach((enemy, index) => {
+      enemy.world = this;
+      enemy.id = `Chicken_${index}_at_${Math.floor(enemy.x)}`;
+    });
     this.draw();
     this.setWorld();
     this.run();
   }
-
   /**
    * Attach world reference to the character and start animations.
    */
@@ -66,7 +70,8 @@ class World {
     bottle.throw(left, this.character.speed);
     this.throwableObject.push(bottle);
     this.collectedBottlesCount--;
-    this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : (this.collectedBottlesCount / this.totalBottles) * 100);
+    let percentage = (this.collectedBottlesCount / this.totalBottles) * 100;
+    this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : percentage);
     this.lastThrownTime = new Date().getTime();
   }
 
@@ -80,24 +85,40 @@ class World {
   }
 
   /**
-   * Check and resolve collisions between the character and enemies.
+   * Process enemy damage states and handle precise top-down jumping responses.
    */
   checkEnemyCollisions() {
+    let hasBounced = false;
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead && !(enemy instanceof Endboss)) {
-          if (typeof enemy.kill === 'function') enemy.kill();
-          SoundManager.playSound('chickenDead');
-          this.character.jump();
-        } else if (!this.character.isHurt() && !enemy.isDead) {
-          this.character.hit();
-          if (this.character.energy > 0) SoundManager.playSound('pepeHurts');
-          this.statusBar.setPercentage(this.character.energy);
-          this.statusBar.playBlinkEffect();
-        }
+      if (enemy.isDead || !this.character.isColliding(enemy)) return;
+      if (this.character.isFallingOnto(enemy) && !(enemy instanceof Endboss)) {
+        if (typeof enemy.kill === 'function') enemy.kill();
+        SoundManager.playSound('chickenDead');
+        this.character.jump(28);
+        hasBounced = true;
+      } else if (!this.character.isHurt() && !hasBounced) {
+        this.executeCharacterDamage();
       }
-      this.checkBottleHitsEnemy(enemy);
     });
+  }
+
+  /**
+   * Safely filters and removes dead units from the active physical physics array.
+   */
+  cleanUpActiveEnemies() {
+    this.level.enemies = this.level.enemies.filter((enemy) => !enemy.isDead);
+  }
+
+  /**
+   * Reduces character vital points and updates primary interface components.
+   */
+  executeCharacterDamage() {
+    this.character.hit();
+    if (this.character.energy > 0) {
+      SoundManager.playSound('pepeHurts');
+    }
+    this.statusBar.setPercentage(this.character.energy);
+    this.statusBar.playBlinkEffect();
   }
 
   /**
@@ -109,8 +130,8 @@ class World {
         this.level.coins.splice(index, 1);
         SoundManager.playSound('coin');
         this.collectedCoinsCount++;
-        let percentage = this.collectedCoinsCount === this.totalCoins ? 100 : (this.collectedCoinsCount / this.totalCoins) * 100;
-        this.coinBar.setPercentage(percentage);
+        let percentage = (this.collectedCoinsCount / this.totalCoins) * 100;
+        this.coinBar.setPercentage(this.collectedCoinsCount === this.totalCoins ? 100 : percentage);
         this.coinBar.playBlinkEffect();
       }
     });
@@ -125,8 +146,8 @@ class World {
         this.level.bottles.splice(index, 1);
         this.collectedBottlesCount++;
         SoundManager.playSound('bottle');
-        let percentage = this.collectedBottlesCount === this.totalBottles ? 100 : (this.collectedBottlesCount / this.totalBottles) * 100;
-        this.bottleBar.setPercentage(percentage);
+        let percentage = (this.collectedBottlesCount / this.totalBottles) * 100;
+        this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : percentage);
         this.bottleBar.playBlinkEffect();
       }
     });
@@ -140,17 +161,25 @@ class World {
     this.throwableObject.forEach((bottle) => {
       if (!bottle.isSplashed && !enemy.isDead && bottle.isColliding(enemy)) {
         bottle.splash(enemy);
-        const isBoss = enemy instanceof Endboss;
-        if (isBoss) {
-          enemy.bossHit();
-          this.bossBar.setPercentage(enemy.energy);
-          this.bossBar.playBlinkEffect();
-        } else {
-          enemy.kill();
-        }
-        SoundManager.playSound(isBoss ? (enemy.energy <= 0 ? 'gameWin' : 'bossHit') : 'chickenDead');
+        this.resolveEnemyHitSystem(enemy);
       }
     });
+  }
+
+  /**
+   * Processes hit impact properties against bosses or lower tier chickens.
+   * @param {Object} enemy - Targeted combat unit instance.
+   */
+  resolveEnemyHitSystem(enemy) {
+    const isBoss = enemy instanceof Endboss;
+    if (isBoss) {
+      enemy.bossHit();
+      this.bossBar.setPercentage(enemy.energy);
+      this.bossBar.playBlinkEffect();
+    } else {
+      enemy.kill();
+    }
+    SoundManager.playSound(isBoss ? (enemy.energy <= 0 ? 'gameWin' : 'bossHit') : 'chickenDead');
   }
 
   /**
@@ -189,7 +218,13 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
+    this.renderBossBarIfClose();
+  }
 
+  /**
+   * Renders the boss bar when requirements for distance are met.
+   */
+  renderBossBarIfClose() {
     let boss = this.level.enemies.find((e) => e instanceof Endboss);
     if (boss && (this.character.x > boss.startX - 1000 || boss.energy < 100)) {
       this.bossBar.x = 260;

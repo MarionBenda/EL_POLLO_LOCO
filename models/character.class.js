@@ -90,7 +90,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handle input-based movement and camera follow.
+   * Handle input-based movement and camera follow with strict bounce protection.
    */
   moveCharacter() {
     if (this.isDead() || MovableObject.gameIsOver) return;
@@ -102,9 +102,10 @@ class Character extends MovableObject {
       this.moveLeft();
       this.otherDirection = true;
     }
-    if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
-    let targetCameraX = -this.x + 200;
-    this.world.camera_x = Math.min(0, targetCameraX);
+    if (this.world.keyboard.SPACE && !this.isAboveGround() && this.speedY <= 0) {
+      this.jump();
+    }
+    this.world.camera_x = Math.min(0, -this.x + 200);
   }
 
   /**
@@ -113,12 +114,12 @@ class Character extends MovableObject {
   playCharacterAnimations() {
     if (this.isDead()) {
       this.handleDeathAnimation();
-    } else if (this.isHurt()) {
-      this.idleTimer = 0;
-      this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()) {
       this.idleTimer = 0;
       this.playAirAnimation();
+    } else if (this.isHurt()) {
+      this.idleTimer = 0;
+      this.playAnimation(this.IMAGES_HURT);
     } else {
       this.handleLandingAnimation();
     }
@@ -194,10 +195,12 @@ class Character extends MovableObject {
   }
 
   /**
-   * Apply upward velocity and reset animation frame for jump.
+   * Apply upward velocity and instantly shift position upward to clear ground state.
+   * @param {number} [customSpeedY=22] - Optional vertical power impulse for high jumps.
    */
-  jump() {
-    this.speedY = 30;
+  jump(customSpeedY = 30) {
+    this.speedY = customSpeedY;
+    this.y -= 25;
     this.currentImage = 0;
   }
 }

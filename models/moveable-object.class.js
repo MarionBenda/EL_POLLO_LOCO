@@ -34,7 +34,7 @@ class MovableObject extends DrawableObject {
    */
   applyGravity() {
     this.setStopableInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
+      if (this.speedY > 0 || this.isAboveGround()) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       } else if (this instanceof Character) {
@@ -51,6 +51,22 @@ class MovableObject extends DrawableObject {
   isAboveGround() {
     if (this instanceof ThrowableObject) return true;
     if (this instanceof Character) return this.y < 150;
+  }
+
+  /**
+   * Determines if this object is falling downward onto the top zone of another object.
+   * @param {MovableObject} mo - The target object to check against.
+   * @returns {boolean} True if falling onto the target, otherwise false.
+   */
+  isFallingOnto(mo) {
+    if (this.speedY >= 0) return false;
+
+    let charBottom = this.y + this.height - this.offset.bottom;
+    let enemyTop = mo.y + mo.offset.top;
+    let enemyHeight = mo.height - mo.offset.top - mo.offset.bottom;
+    let finalHitZone = (enemyTop + enemyHeight) * 1.15;
+
+    return charBottom < finalHitZone && this.isColliding(mo);
   }
 
   /**

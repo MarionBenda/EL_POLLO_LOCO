@@ -96,3 +96,41 @@
   border-color: #f44336;
   background: rgba(244, 67, 54, 0.2);
 }
+
+.dialog-mute-btn {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  font-family: 'Oi', cursive;
+  font-size: 20px;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  background-color: #333;
+  color: #ffaa00;
+  border: 2px solid #ffaa00;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 175ms ease-in-out;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.dialog-mute-btn:hover {
+  background-color: #ffaa00;
+  color: #333;
+  transform: scale(1.05);
+}
+
+.dialog-mute-btn:active {
+  transform: scale(0.95);
+}
+
+.dialog-impressum-link:hover {
+  background-color: rgba(255, 170, 0, 0.25);
+}
+
+.dialog-impressum-link:active {
+  transform: scale(0.95);
+}

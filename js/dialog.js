@@ -1,41 +1,55 @@
-// On DOM ready: ensure dialog sound starts and resumes on first user click.
+/**
+ * Sets up the dialog audio on load and adds a listener for the first user click.
+ */
 window.addEventListener('DOMContentLoaded', () => {
-  SoundManager.startDialogSound();
-
-  document.body.addEventListener(
-    'click',
-    (event) => {
-      const dialog = document.getElementById('start-dialog');
-      const clickedElement = event.target;
-      const isStartButtonClick = clickedElement.classList.contains('btn-restart');
-      const isOverlayClick = clickedElement.id === 'start-dialog';
-
-      if (SoundManager.sounds.dialog.paused && dialog && !dialog.classList.contains('d-none')) {
-        if (!isStartButtonClick && !isOverlayClick) {
-          SoundManager.startDialogSound();
-        }
-      }
-    },
-    { once: true },
-  );
+  if (!SoundManager.isMuted) SoundManager.startDialogSound();
+  document.body.addEventListener('click', handleFirstClick, { once: true });
 });
 
 /**
- * Close the start dialog overlay, stop dialog audio and start the game.
- * @param {MouseEvent|TouchEvent} event - The triggering event from click/tap.
+ * Handles the first user click on the document to resume the intro dialog audio.
+ * @param {MouseEvent} event - The triggering click event details.
+ */
+function handleFirstClick(event) {
+  const dialog = document.getElementById('start-dialog');
+  const isPaused = SoundManager.sounds.dialog.paused;
+  if (isPaused && dialog && !dialog.classList.contains('d-none')) {
+    checkAndPlayFirstClick(event.target);
+  }
+}
+
+/**
+ * Filters the clicked elements to play audio only on valid interaction areas.
+ * @param {HTMLElement} el - The specific node element target that was clicked.
+ */
+function checkAndPlayFirstClick(el) {
+  const isIgnored =
+    el.classList.contains('btn-restart') || el.id === 'start-dialog' || el.classList.contains('dialog-mute-btn') || el.id === 'mute-btn';
+
+  if (!isIgnored && !SoundManager.isMuted) {
+    SoundManager.startDialogSound();
+  }
+}
+
+/**
+ * Closes the start dialog overlay and switches audio tracks to the gameplay mode.
+ * @param {MouseEvent} event - The click tracking parameters from the panel container.
  */
 function closeStartDialog(event) {
-  const dialogOverlay = document.getElementById('start-dialog');
-  const dialogContent = document.querySelector('.dialog-content');
-  const clickedElement = event.target;
+  const el = event.target;
+  if (el.classList.contains('dialog-mute-btn')) return;
+  if (document.querySelector('.dialog-content').contains(el) && !el.classList.contains('btn-restart')) return;
 
-  if (dialogContent.contains(clickedElement) && !clickedElement.classList.contains('btn-restart')) {
-    return;
-  }
   SoundManager.stopDialogSound();
-  SoundManager.playBackground();
-  dialogOverlay.classList.add('d-none');
+  if (!SoundManager.isMuted) SoundManager.playBackground();
+  document.getElementById('start-dialog').classList.add('d-none');
+  executeInit();
+}
 
+/**
+ * Safely executes the core game initialization function located in primary script environments.
+ */
+function executeInit() {
   if (typeof init === 'function') {
     init();
   } else {

@@ -31,7 +31,27 @@ class DrawableObject {
     }
   }
 
-  drawFrame(ctx) {}
+  /**
+   * Render diagnostic border frames for the outer image box and inner combat hitbox.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   */
+  drawFrame(ctx) {
+    if (!window.DEBUG_MODE) {
+      return;
+    }
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = '2';
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    if (this.offset) {
+      ctx.strokeStyle = 'red';
+      ctx.strokeRect(
+        this.x + this.offset.left,
+        this.y + this.offset.top,
+        this.width - this.offset.left - this.offset.right,
+        this.height - this.offset.top - this.offset.bottom,
+      );
+    }
+  }
 
   /**
    * Preload multiple images into this object's cache and the global cache.

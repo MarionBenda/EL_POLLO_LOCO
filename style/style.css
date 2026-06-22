@@ -405,22 +405,24 @@ kbd {
 
 .dialog-header {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 15px;
   width: 100%;
   margin-bottom: 25px;
 }
 
 .dialog-impressum-link {
-  justify-self: end;
+  grid-column: 3;
+  grid-row: 1;
   text-decoration: none;
   font-size: 14px;
   color: #ffaa00;
   font-family: inherit;
   background-color: rgba(255, 170, 0, 0.1);
-  padding: 6px 5px;
+  padding: 6px 10px;
   border: 2px solid #ffaa00;
   border-radius: 8px;
-  margin-bottom: 15px;
   transition:
     background-color 0.2s ease,
     transform 0.1s ease;
@@ -435,8 +437,8 @@ kbd {
 }
 
 .dialog-content .dialog-header h2 {
-  margin-top: 0;
-  margin-bottom: 0;
+  grid-column: 2;
+  margin: 0;
   text-align: center;
   width: 100%;
 }

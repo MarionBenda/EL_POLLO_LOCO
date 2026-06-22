@@ -17,39 +17,66 @@ class SmallChicken extends MovableObject {
    */
   constructor(x) {
     super();
-
     this.loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
     this.loadImages(this.IMAGES_WALKING);
+    this.imageCache[this.IMAGE_DEAD] = new Image();
+    this.imageCache[this.IMAGE_DEAD].src = this.IMAGE_DEAD;
     this.x = x;
     this.speed = 0.75 + Math.random() * 3;
-    this.offset = { top: 5, bottom: 5, left: 10, right: 10 };
+    this.offset = { top: 15, bottom: 10, left: 22, right: 22 };
     this.animate();
   }
 
   /**
-   * Start movement and animation intervals, only when visible.
+   * Setup processing loops for positional movements and layout updates.
    */
   animate() {
-    this.setStopableInterval(() => {
-      let isVisible = this.world && this.x < -this.world.camera_x + 750;
-
-      if (!this.isDead && isVisible) {
-        this.moveLeft();
-      }
-    }, 1000 / 60);
-
-    this.setStopableInterval(() => {
-      if (!this.isDead) this.playAnimation(this.IMAGES_WALKING);
-    }, 150);
+    this.setStopableInterval(() => this.handleVisibleMovement(), 1000 / 60);
+    this.setStopableInterval(() => this.handleWalkingAnimation(), 150);
   }
 
   /**
-   * Mark small chicken dead and remove after delay.
+   * Evaluates screen boundary checks to safely shift elements leftwards.
+   */
+  handleVisibleMovement() {
+    if (this.isDead) return;
+    let isVisible = this.world && this.x < -this.world.camera_x + 750;
+    if (!this.isDead && isVisible) {
+      this.moveLeft();
+    }
+  }
+
+  /**
+   * Refreshes active visual textures during core traversal states.
+   */
+  handleWalkingAnimation() {
+    if (this.isDead) return;
+    if (!this.isDead) {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  /**
+   * Disable enemy physics, freeze active animations, and remove after a delay.
    */
   kill() {
     this.isDead = true;
     this.speed = 0;
-    this.loadImage(this.IMAGE_DEAD);
+    this.width = 80;
+    this.height = 80;
+    this.offset = { top: 15, bottom: 10, left: 15, right: 15 };
+    this.img = this.imageCache[this.IMAGE_DEAD];
+    this.playAnimation = function () {};
+
+    setTimeout(() => {
+      this.y = -9999;
+    }, 1000);
+  }
+
+  /**
+   * Shifts the dead unit coordinate out of bounds after active render timeout.
+   */
+  clearPhysicalPresenceDelayed() {
     setTimeout(() => {
       this.y = -9999;
     }, 1000);

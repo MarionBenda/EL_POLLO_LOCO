@@ -2,8 +2,10 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+window.DEBUG_MODE = true;
+
 /**
- * Initialize canvas, input bindings and create the World instance.
+ * Initializes the canvas, levels, input bindings, and game world.
  */
 function init() {
   checkSavedMuteStatus();
@@ -11,84 +13,113 @@ function init() {
   initLevel();
   keyboard.bindKeyPressEvents();
   keyboard.bindTouchEvents();
-
-  setTimeout(() => {
-    world = new World(canvas, keyboard);
-  }, 50);
+  setTimeout(() => (world = new World(canvas, keyboard)), 50);
 }
 
 /**
- * Restart the game: reset intervals, sounds, UI and re-init the level.
+ * Resets intervals, active screens, and sound states to restart the game.
  */
 function restartGame() {
   MovableObject.stopAllIntervals();
-  ['gameOver', 'gameWin'].forEach((soundName) => {
-    SoundManager.sounds[soundName].pause();
-    SoundManager.sounds[soundName].currentTime = 0;
+  ['gameOver', 'gameWin'].forEach((sound) => {
+    SoundManager.sounds[sound].pause();
+    SoundManager.sounds[sound].currentTime = 0;
   });
   SoundManager.playBackground();
-  document
-    .querySelectorAll('#game-over-screen, #you-won-screen, #restart-container, #restart-container-desktop')
-    .forEach((element) => element.classList.add('d-none'));
+  hideEndScreens();
   initLevel();
   setTimeout(() => (world = new World(canvas, keyboard)), 50);
 }
 
 /**
- * Toggle browser fullscreen mode for the canvas wrapper.
+ * Hides all end-game overlays and restart button containers.
+ */
+function hideEndScreens() {
+  document
+    .querySelectorAll('#game-over-screen, #you-won-screen, #restart-container, #restart-container-desktop')
+    .forEach((el) => el.classList.add('d-none'));
+}
+
+/**
+ * Toggles the canvas wrapper element into browser fullscreen mode.
  */
 function toggleFullscreen() {
   let element = document.querySelector('.canvas-wrapper');
   if (!document.fullscreenElement) {
-    element.requestFullscreen().catch((err) => console.warn(`Vollbild fehlgeschlagen: ${err.message}`));
+    element.requestFullscreen().catch((err) => console.warn(`Fehler: ${err.message}`));
   } else {
     document.exitFullscreen();
   }
 }
 
 /**
- * Handle global keydown events to toggle fullscreen mode.
+ * Global keydown listener to trigger fullscreen mode when 'F' key is pressed.
  */
 window.addEventListener('keydown', (event) => {
-  if (event.code === 'KeyF' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+    return;
+  }
+
+  if (event.code === 'KeyF') {
     toggleFullscreen();
+  }
+
+  if (event.code === 'KeyB') {
+    window.DEBUG_MODE = !window.DEBUG_MODE;
   }
 });
 
 /**
- * Toggles global sound and persists the setting in the browser.
+ * Toggles the global sound state and saves the choice to localStorage.
  */
 function toggleGameMute() {
-  const muteBtn = document.getElementById('mute-btn');
-
-  if (muteBtn) {
-    muteBtn.blur();
-  }
   SoundManager.isMuted = !SoundManager.isMuted;
   localStorage.setItem('gameMuted', SoundManager.isMuted);
+  updateMuteUI();
+}
+
+/**
+ * Updates text icons on all mute buttons and routes audio state adjustments.
+ */
+function updateMuteUI() {
+  const btns = document.querySelectorAll('#mute-btn, .dialog-mute-btn');
+  const icon = SoundManager.isMuted ? '🔇' : '🔊';
+  btns.forEach((b) => {
+    b.innerText = icon;
+    b.blur();
+  });
+  handleAudioByState();
+}
+
+/**
+ * Activates or deactivates sound groups based on the dialog overlay visibility.
+ */
+function handleAudioByState() {
+  const dialog = document.getElementById('start-dialog');
+  const isDialogOpen = dialog && !dialog.classList.contains('d-none');
 
   if (SoundManager.isMuted) {
-    muteBtn.innerText = '🔇';
     SoundManager.muteAllSounds();
+  } else if (isDialogOpen) {
+    SoundManager.sounds.dialog.muted = false;
+    SoundManager.startDialogSound();
   } else {
-    muteBtn.innerText = '🔊';
     SoundManager.unmuteAllSounds();
   }
 }
 
 /**
- * Load the persistent mute setting from localStorage and update the sound state and button UI.
+ * Loads persistent mute configuration and synchronizes button visuals via delayed timeout.
  */
 function checkSavedMuteStatus() {
-  const muteBtn = document.getElementById('mute-btn');
-
-  const wasMuted = localStorage.getItem('gameMuted') === 'true';
-
-  if (wasMuted) {
+  if (localStorage.getItem('gameMuted') === 'true') {
     SoundManager.isMuted = true;
-    if (muteBtn) muteBtn.innerText = '🔇';
-    if (typeof SoundManager.muteAllSounds === 'function') {
-      SoundManager.muteAllSounds();
-    }
+    if (typeof SoundManager.muteAllSounds === 'function') SoundManager.muteAllSounds();
   }
+  setTimeout(() => updateMuteUI(), 50);
 }
+
+/**
+ * Core initial trigger running sound checks right when DOM structures become ready.
+ */
+window.addEventListener('DOMContentLoaded', checkSavedMuteStatus);
