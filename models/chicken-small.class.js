@@ -12,8 +12,8 @@ class SmallChicken extends MovableObject {
   ];
 
   /**
-   * Create a small chicken enemy at given x and start behavior.
-   * @param {number} x - Starting X position for the small chicken.
+   * Initializes properties, preloads textures, and sets a randomized speed value.
+   * @param {number} x - Starting horizontal coordinate.
    */
   constructor(x) {
     super();
@@ -24,11 +24,10 @@ class SmallChicken extends MovableObject {
     this.x = x;
     this.speed = 0.75 + Math.random() * 3;
     this.offset = { top: 15, bottom: 10, left: 22, right: 22 };
-    this.animate();
   }
 
   /**
-   * Setup processing loops for positional movements and layout updates.
+   * Starts periodic interval loops for horizontal movement and walking textures.
    */
   animate() {
     this.setStopableInterval(() => this.handleVisibleMovement(), 1000 / 60);
@@ -36,47 +35,37 @@ class SmallChicken extends MovableObject {
   }
 
   /**
-   * Evaluates screen boundary checks to safely shift elements leftwards.
+   * Moves the unit leftwards if it is alive and enters the active camera viewport bounds.
    */
   handleVisibleMovement() {
     if (this.isDead) return;
     let isVisible = this.world && this.x < -this.world.camera_x + 750;
-    if (!this.isDead && isVisible) {
+    if (isVisible) {
       this.moveLeft();
     }
   }
 
   /**
-   * Refreshes active visual textures during core traversal states.
+   * Cycles through walking textures continuously if the unit is alive.
    */
   handleWalkingAnimation() {
     if (this.isDead) return;
-    if (!this.isDead) {
-      this.playAnimation(this.IMAGES_WALKING);
-    }
+    this.playAnimation(this.IMAGES_WALKING);
   }
 
   /**
-   * Disable enemy physics, freeze active animations, and remove after a delay.
+   * Disables object velocity, clears the hitbox properties, and removes the unit after a short delay.
    */
   kill() {
     if (this.isDead) return;
     this.isDead = true;
     this.speed = 0;
     this.img = this.imageCache[this.IMAGE_DEAD];
-    this.height = 40;
-    this.y = this.y + 40;
     this.offset = { top: 9999, bottom: 9999, left: 9999, right: 9999 };
-    this.playAnimation = function () {};
     setTimeout(() => {
-      this.y = -9999;
-    }, 1000);
-  }
-
-  /**
-   * Shifts the dead unit coordinate out of bounds after active render timeout.
-   */
-  clearPhysicalPresenceDelayed() {
+      this.height = 40;
+      this.y = this.y + 40;
+    }, 20);
     setTimeout(() => {
       this.y = -9999;
     }, 1000);

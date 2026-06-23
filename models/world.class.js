@@ -1,6 +1,6 @@
 class World {
   character = new Character();
-  level = level1;
+  level;
   canvas;
   ctx;
   keyboard;
@@ -11,6 +11,7 @@ class World {
   bossBar = new BossHealthBar();
   throwableObject = [];
   deadEnemies = [];
+  hitEnemies = [];
   collectedCoinsCount = 0;
   totalCoins = 0;
   collectedBottlesCount = 0;
@@ -18,27 +19,39 @@ class World {
   lastThrownTime = 0;
 
   /**
-   * Initialize world rendering and start main loops.
-   * @param {HTMLCanvasElement} canvas - Canvas element used for drawing.
-   * @param {Keyboard} keyboard - Keyboard input state object.
+   * Initializes canvas context, builds the level instance, and triggers timers.
+   * @param {HTMLCanvasElement} canvas - Target rendering viewport.
+   * @param {Keyboard} keyboard - Input state tracker link.
    */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.level = initLevel();
+    this.character.energy = 100;
+    this.hitEnemies = [];
+    this.throwableObject = [];
+    this.collectedCoinsCount = 0;
+    this.collectedBottlesCount = 0;
     this.totalCoins = this.level.coins.length;
     this.totalBottles = this.level.bottles.length;
-    // Weist jedem Huhn eine eindeutige Nummer zu
-    this.level.enemies.forEach((enemy, index) => {
-      enemy.world = this;
-      enemy.id = `Chicken_${index}_at_${Math.floor(enemy.x)}`;
+    this.level.enemies.forEach((e, i) => {
+      e.world = this;
+      e.id = `C_${i}_${Date.now()}_${Math.floor(e.x)}`;
+      if (typeof e.animate === 'function') e.animate();
     });
     this.draw();
     this.setWorld();
     this.run();
+    setTimeout(() => {
+      this.statusBar.setPercentage(100);
+      this.coinBar.setPercentage(0);
+      this.bottleBar.setPercentage(0);
+    }, 50);
   }
+
   /**
-   * Attach world reference to the character and start animations.
+   * Chains the character instance to this world coordinate framework.
    */
   setWorld() {
     this.character.world = this;
@@ -46,20 +59,19 @@ class World {
   }
 
   /**
-   * Start periodic game logic tasks (collision & throwing).
+   * Starts constant background game physics loops for collision tracking.
    */
   run() {
     this.character.setStopableInterval(() => {
       this.checkCollisions();
     }, 1000 / 60);
-
     this.character.setStopableInterval(() => {
       this.checkThrowObjects();
     }, 1000 / 60);
   }
 
   /**
-   * Handle player throwing bottles when input and cooldown allow.
+   * Instantiates projectile elements when weapon fires inputs resolve.
    */
   checkThrowObjects() {
     let timePassed = new Date().getTime() - this.lastThrownTime;
@@ -70,13 +82,12 @@ class World {
     bottle.throw(left, this.character.speed);
     this.throwableObject.push(bottle);
     this.collectedBottlesCount--;
-    let percentage = (this.collectedBottlesCount / this.totalBottles) * 100;
-    this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : percentage);
+    this.bottleBar.setPercentage((this.collectedBottlesCount / this.totalBottles) * 100);
     this.lastThrownTime = new Date().getTime();
   }
 
   /**
-   * Run all collision checks each frame.
+   * Executes individual collision pipelines across the current frame layers.
    */
   checkCollisions() {
     this.checkEnemyCollisions();
@@ -85,36 +96,38 @@ class World {
   }
 
   /**
-   * Handle character collisions with enemies for bouncing or taking damage.
+   * Evaluates bounds overlays between player hitboxes and active mobile units.
    */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
+      if (!enemy || enemy.isDead || this.hitEnemies.includes(enemy.id)) return;
       this.checkBottleHitsEnemy(enemy);
-      if (enemy.y < 0 || enemy.isDead) return;
-      if (this.character.isFallingOnto(enemy) && !(enemy instanceof Endboss)) {
-        enemy.kill();
-        SoundManager.playSound('chickenDead');
-        return this.character.bounceJump();
-      }
-      if (this.character.isColliding(enemy) && !this.character.isHurt()) {
-        this.executeCharacterDamage();
+      let isInsideScreen = enemy.x < -this.camera_x + this.canvas.width + 50 && enemy.x > -this.camera_x - 100;
+      if (isInsideScreen && this.character.isColliding(enemy)) {
+        if (this.character.isBouncing) return;
+        if (this.character.isFallingOnto(enemy) && !(enemy instanceof Endboss)) {
+          if (enemy.id) this.hitEnemies.push(enemy.id);
+          enemy.kill();
+          typeof SoundManager !== 'undefined' && SoundManager.playSound('chickenDead');
+          this.character.bounceJump();
+        } else if (!this.character.isHurt() && !this.character.isBouncing) {
+          this.executeCharacterDamage();
+        }
       }
     });
   }
 
   /**
-   * Safely filters and removes dead units from the active physical physics array.
+   * Unused legacy clearing interface reserved for dependency management structures.
    */
-  cleanUpActiveEnemies() {
-    this.level.enemies = this.level.enemies.filter((enemy) => !enemy.isDead);
-  }
+  cleanUpActiveEnemies() {}
 
   /**
-   * Reduces character vital points and updates primary interface components.
+   * Lowers player vital statistics points and hooks bar interface flashes.
    */
   executeCharacterDamage() {
     this.character.hit();
-    if (this.character.energy > 0) {
+    if (this.character.energy > 0 && typeof SoundManager !== 'undefined') {
       SoundManager.playSound('pepeHurts');
     }
     this.statusBar.setPercentage(this.character.energy);
@@ -122,44 +135,43 @@ class World {
   }
 
   /**
-   * Collect coins when the character collides with them.
+   * Removes collected treasure items from standard level tracking matrices.
    */
   checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
         this.level.coins.splice(index, 1);
-        SoundManager.playSound('coin');
+        typeof SoundManager !== 'undefined' && SoundManager.playSound('coin');
         this.collectedCoinsCount++;
-        let percentage = (this.collectedCoinsCount / this.totalCoins) * 100;
-        this.coinBar.setPercentage(this.collectedCoinsCount === this.totalCoins ? 100 : percentage);
+        this.coinBar.setPercentage((this.collectedCoinsCount / this.totalCoins) * 100);
         this.coinBar.playBlinkEffect();
       }
     });
   }
 
   /**
-   * Collect bottles when the character collides with them.
+   * Removes collected ammunition items from baseline viewport layouts.
    */
   checkBottleCollisions() {
+    if (!this.level || !this.level.bottles) return;
     this.level.bottles.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
         this.level.bottles.splice(index, 1);
         this.collectedBottlesCount++;
-        SoundManager.playSound('bottle');
-        let percentage = (this.collectedBottlesCount / this.totalBottles) * 100;
-        this.bottleBar.setPercentage(this.collectedBottlesCount === this.totalBottles ? 100 : percentage);
+        typeof SoundManager !== 'undefined' && SoundManager.playSound('bottle');
+        this.bottleBar.setPercentage((this.collectedBottlesCount / this.totalBottles) * 100);
         this.bottleBar.playBlinkEffect();
       }
     });
   }
 
   /**
-   * Detect thrown bottle hits against an enemy and apply effects.
-   * @param {Object} enemy - Enemy object to test collisions with.
+   * Dispatches collision verification between active weapon tracks and targets.
    */
   checkBottleHitsEnemy(enemy) {
+    if (!this.throwableObject || !enemy || enemy.isDead) return;
     this.throwableObject.forEach((bottle) => {
-      if (!bottle.isSplashed && !enemy.isDead && bottle.isColliding(enemy)) {
+      if (bottle && !bottle.isSplashed && bottle.isColliding(enemy)) {
         bottle.splash(enemy);
         this.resolveEnemyHitSystem(enemy);
       }
@@ -167,8 +179,7 @@ class World {
   }
 
   /**
-   * Processes hit impact properties against bosses or lower tier chickens.
-   * @param {Object} enemy - Targeted combat unit instance.
+   * Updates health metrics for bosses or resolves instant small enemy destruction.
    */
   resolveEnemyHitSystem(enemy) {
     const isBoss = enemy instanceof Endboss;
@@ -177,13 +188,14 @@ class World {
       this.bossBar.setPercentage(enemy.energy);
       this.bossBar.playBlinkEffect();
     } else {
+      if (enemy.id && !this.hitEnemies.includes(enemy.id)) this.hitEnemies.push(enemy.id);
       enemy.kill();
     }
-    SoundManager.playSound(isBoss ? (enemy.energy <= 0 ? 'gameWin' : 'bossHit') : 'chickenDead');
+    typeof SoundManager !== 'undefined' && SoundManager.playSound(isBoss ? (enemy.energy <= 0 ? 'gameWin' : 'bossHit') : 'chickenDead');
   }
 
   /**
-   * Main draw loop: clear canvas, translate camera and render scene.
+   * Manages core frames clear actions and initiates global scene translations.
    */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -196,7 +208,7 @@ class World {
   }
 
   /**
-   * Add all level objects to the rendering queue.
+   * Pushes specific object queues directly into global viewport display tasks.
    */
   addLevelObjects() {
     this.addObjectsToMap(this.level.backgroundObject);
@@ -209,12 +221,10 @@ class World {
   }
 
   /**
-   * Draw status bars (health, coins, bottles, boss) on the HUD.
+   * Draws heads-up display indicators onto isolated canvas viewport layers.
    */
   addStatusBars() {
-    if (this.character && this.character.energy <= 0) {
-      this.statusBar.setPercentage(0);
-    }
+    if (this.character && this.character.energy <= 0) this.statusBar.setPercentage(0);
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
@@ -222,7 +232,7 @@ class World {
   }
 
   /**
-   * Renders the boss bar when requirements for distance are met.
+   * Displays the combat boss gauge bar once horizontal proximities fall inside targets.
    */
   renderBossBarIfClose() {
     let boss = this.level.enemies.find((e) => e instanceof Endboss);
@@ -234,44 +244,44 @@ class World {
   }
 
   /**
-   * Add an array of objects to the map rendering.
-   * @param {Array} objects - Array of drawable objects.
+   * Maps an array group container down to specific drawing operations.
    */
   addObjectsToMap(objects) {
     objects.forEach((object) => this.addToMap(object));
   }
 
   /**
-   * Draw a movable object on the canvas with flipping and blink handling.
-   * @param {MovableObject} mo - Movable object to draw.
+   * Handles asset mapping layer orientations and horizontal mirroring checks.
    */
   addToMap(mo) {
     if (!mo) return;
-    if (mo.otherDirection) this.flipImage(mo);
-    if (mo.isBlinking) this.ctx.globalAlpha = 0.5;
-    mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
-    this.ctx.globalAlpha = 1;
-    if (mo.otherDirection) this.flipImageBack(mo);
+    if (mo.otherDirection) {
+      this.flipImage(mo);
+      if (mo.isBlinking) this.ctx.globalAlpha = 0.5;
+      this.ctx.drawImage(mo.img, -mo.x, mo.y, mo.width, mo.height);
+      this.ctx.globalAlpha = 1;
+      this.flipImageBack(mo);
+    } else {
+      if (mo.isBlinking) this.ctx.globalAlpha = 0.5;
+      mo.draw(this.ctx);
+      mo.drawFrame(this.ctx);
+      this.ctx.globalAlpha = 1;
+    }
   }
 
   /**
-   * Flip drawing context horizontally for objects facing left.
-   * @param {MovableObject} mo - Movable object whose image to flip.
+   * Flips rendering matrix calculations horizontally for structural alignment options.
    */
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
     this.ctx.scale(-1, 1);
-    mo.x = mo.x * -1;
   }
 
   /**
-   * Restore drawing context after horizontal flip.
-   * @param {MovableObject} mo - Movable object to restore position for.
+   * Reverts transformed calculation layers safely back to baseline canvas states.
    */
   flipImageBack(mo) {
-    mo.x = mo.x * -1;
     this.ctx.restore();
   }
 }

@@ -16,20 +16,17 @@ class SoundManager {
   static isMuted = false;
 
   /**
-   * Start looping dialog audio at reduced volume.
+   * Starts looping the menu dialog audio track with catch safety.
    */
   static startDialogSound() {
     if (this.isMuted) return;
-
     this.sounds.dialog.loop = true;
     this.sounds.dialog.volume = 0.3;
-    this.sounds.dialog.play().catch((e) => {
-      console.log('Autoplay blockiert. Sound startet bei der nächsten Interaktion.');
-    });
+    this.sounds.dialog.play().catch((e) => console.log('Wartet auf erste Interaktion für Dialog-Sound.'));
   }
 
   /**
-   * Stop and reset dialog audio playback.
+   * Instantly pauses the menu dialog sound track and resets its timeline pointer.
    */
   static stopDialogSound() {
     this.sounds.dialog.pause();
@@ -37,35 +34,31 @@ class SoundManager {
   }
 
   /**
-   * Play background music if not muted.
+   * Starts looping the main gameplay background music track with safety triggers.
    */
   static playBackground() {
     if (this.isMuted) return;
+    this.stopDialogSound();
     this.sounds.background.loop = true;
     this.sounds.background.volume = 0.15;
-    this.sounds.background.play();
+    this.sounds.background.play().catch((e) => console.log('Hintergrundmusik wartet...'));
   }
 
   /**
-   * Play a named sound effect, pausing background on end/win.
-   * @param {string} name - Key name of the sound to play.
+   * Triggers a specific audio track while pausing background themes on game-over states.
    */
   static playSound(name) {
     if (this.isMuted) return;
-
-    if (name === 'gameOver' || name === 'gameWin') {
-      this.sounds.background.pause();
-    }
-
+    if (name === 'gameOver' || name === 'gameWin') this.sounds.background.pause();
     let sound = this.sounds[name];
     if (sound) {
       sound.currentTime = 0;
-      sound.play().catch((e) => console.log('Sound-Abgabetakt blockiert:', e));
+      sound.play().catch(() => {});
     }
   }
 
   /**
-   * Toggle global mute state for sound manager.
+   * Switches the global boolean mute flag and updates the background track mute status.
    */
   static toggleMute() {
     this.isMuted = !this.isMuted;
@@ -73,7 +66,7 @@ class SoundManager {
   }
 
   /**
-   * Mutes all sounds instantly and pauses playing ones.
+   * Enforces global mute properties and freezes execution pipelines for all tracks.
    */
   static muteAllSounds() {
     this.isMuted = true;
@@ -84,19 +77,17 @@ class SoundManager {
   }
 
   /**
-   * Unmute all game sounds and ensure the background music resumes playing.
+   * Restores normal volume bounds, resets menu layers, and wakes up background loops.
    */
   static unmuteAllSounds() {
     this.isMuted = false;
     Object.values(this.sounds).forEach((sound) => {
       sound.muted = false;
     });
-
+    this.stopDialogSound();
     if (this.sounds && this.sounds.background) {
       this.sounds.background.volume = 0.15;
-      this.sounds.background.play().catch((e) => {
-        console.log('Hintergrundmusik wartet auf User-Interaktion:', e);
-      });
+      this.sounds.background.play().catch((e) => console.log('Hintergrundmusik wartet auf User-Interaktion:', e));
     }
   }
 }

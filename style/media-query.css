@@ -112,6 +112,35 @@
     border-radius: 4px;
     border: 1px solid rgba(255, 170, 0, 0.3);
   }
+
+  img.end-screen-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    max-width: 100%;
+    max-height: 70%;
+    object-fit: contain;
+    z-index: 10;
+  }
+
+  div.dynamic-restart.end-screen-menu {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 15;
+    width: max-content;
+  }
+
+  .end-screen-menu button.btn-restart {
+    padding: 10px 25px;
+    font-size: 18px;
+    height: auto;
+  }
 }
 
 @media (orientation: portrait) {

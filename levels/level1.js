@@ -47,7 +47,7 @@ function createLevelEnemies() {
 function createLevelCoins() {
   let coins = [];
   let stopX = LEVEL_END_X - 500;
-  for (let x = 500; x < stopX; x += 300) {
+  for (let x = 550; x < stopX; x += 370) {
     coins.push(new Coins(x + Math.random() * 100));
   }
   return coins;
@@ -62,7 +62,7 @@ function createLevelBottle() {
   let stopX = LEVEL_END_X - 500;
   let i = 0;
 
-  for (let x = 500; x < stopX; x += 300) {
+  for (let x = 750; x < stopX; x += 300) {
     let isInAir = i % 2 === 0;
     bottles.push(new Bottle(x + Math.random() * 100, isInAir));
     i++;
@@ -74,10 +74,22 @@ let level1;
 
 /**
  * Instantiate Level 1 with all generated game entities.
+ * @returns {Level} A fresh instance of the level configuration.
  */
 function initLevel() {
-  level1 = new Level(createLevelEnemies(), [new Cloud(), new Cloud(), new Cloud()], createBackgrounds(), createLevelCoins(), createLevelBottle());
-  level1.level_end_x = LEVEL_END_X;
+  let freshLevel = new Level(
+    createLevelEnemies(),
+    [new Cloud(), new Cloud(), new Cloud()],
+    createBackgrounds(),
+    createLevelCoins(),
+    createLevelBottle(),
+  );
+
+  freshLevel.level_end_x = LEVEL_END_X;
+
+  level1 = freshLevel;
+
+  return freshLevel;
 }
 
 initLevel();

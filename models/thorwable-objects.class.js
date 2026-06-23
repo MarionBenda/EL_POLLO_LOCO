@@ -21,11 +21,7 @@ class ThrowableObject extends MovableObject {
   ];
 
   /**
-   * Create a throwable bottle, configure physics offsets, load textures, and trigger the throw sound.
-   * @param {number} x - The initial horizontal position.
-   * @param {number} y - The initial vertical position.
-   * @param {boolean} isLookingLeft - Direction flag indicating if the bottle travels left.
-   * @param {number} characterSpeed - The current speed of the throwing character.
+   * Initializes properties, preloads textures, sets bounding offsets, and plays launch audio.
    */
   constructor(x, y, isLookingLeft, characterSpeed) {
     super();
@@ -43,15 +39,12 @@ class ThrowableObject extends MovableObject {
     }
     this.loadImages(this.IMAGES_ROTATING);
     this.loadImages(this.IMAGES_SPLASH);
-    if (this.y > 330) {
-      this.y = 320;
-    }
+    if (this.y > 330 || this.y < 120) this.y = 200;
     SoundManager.sounds.throwBottle.play();
   }
 
   /**
-   * Render the object on the canvas with isolated transparency states.
-   * @param {CanvasRenderingContext2D} ctx - The local canvas rendering context.
+   * Renders the bottle layer on the canvas context with full visibility states.
    */
   draw(ctx) {
     ctx.save();
@@ -61,36 +54,29 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Launch the throwable object with initial velocity and animations.
-   * @param {boolean} isLookingLeft - Direction the character is facing.
-   * @param {number} characterSpeed - Current character speed affecting throw.
+   * Calculates structural force impulses and sets flight interval loop states.
    */
   throw(isLookingLeft, characterSpeed) {
     let isJumping = this.world?.character?.isAboveGround();
     let running = (isLookingLeft && this.world?.keyboard?.LEFT) || (!isLookingLeft && this.world?.keyboard?.RIGHT);
     this.speedY = isJumping ? 10 : 7.5;
-    if (running && !isLookingLeft) {
-      this.x -= 40;
-    } else if (running && isLookingLeft) {
-      this.x += 40;
-    }
+    if (running && !isLookingLeft) this.x -= 40;
+    else if (running && isLookingLeft) this.x += 40;
     this.x += isLookingLeft ? -20 : 20;
-    let base = running ? 12 : 8.5;
+    let base = running ? 7.5 : 5.0; // Adjusted for better throwing distance
     this.speedX = isLookingLeft ? -base : base;
     this.setStopableInterval(() => this.movePhysics(), 1000 / 60);
     this.setStopableInterval(() => this.animateRotation(), 50);
   }
 
   /**
-   * Update physics for the thrown object (position, gravity, splash).
+   * Updates coordinates based on gravity speeds and triggers ground impact breaking.
    */
   movePhysics() {
     if (this.isSplashed) return;
-
     this.x += this.speedX;
     this.y -= this.speedY;
     this.speedY -= this.acceleration;
-
     if (this.y >= 360) {
       this.y = 360;
       this.splash();
@@ -98,7 +84,7 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Animate the bottle rotation while in flight.
+   * Processes cyclical sprite transformations during airborne transition phases.
    */
   animateRotation() {
     if (this.isSplashed) return;
@@ -106,8 +92,7 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Play splash animation and optionally align splash to an enemy.
-   * @param {Object|null} enemy - Enemy to align splash with.
+   * Freezes velocities, centers coordinate positions, and triggers shattering animation cycles.
    */
   splash(enemy = null) {
     SoundManager.sounds.bottleBreak.currentTime = 0;

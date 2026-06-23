@@ -1,43 +1,60 @@
-let canvas;
-let world;
-let keyboard = new Keyboard();
-
+let canvas,
+  world,
+  keyboard = new Keyboard();
 window.DEBUG_MODE = false;
 
 /**
- * Initializes the canvas, levels, input bindings, and game world.
+ * Initializes canvas, level, input listeners, and schedules world creation.
  */
 function init() {
+  for (let i = 1; i < 9999; i++) window.clearInterval(i);
   checkSavedMuteStatus();
   canvas = document.getElementById('gameCanvas');
   initLevel();
   keyboard.bindKeyPressEvents();
   keyboard.bindTouchEvents();
-  setTimeout(() => (world = new World(canvas, keyboard)), 50);
+  setTimeout(() => (world = new World(canvas, keyboard)), 100);
 }
 
 /**
- * Resets intervals, active screens, and sound states to restart the game.
+ * Resets all browser intervals, clears world cache, and restarts the game state.
  */
 function restartGame() {
-  MovableObject.stopAllIntervals();
-  ['gameOver', 'gameWin'].forEach((sound) => {
-    SoundManager.sounds[sound].pause();
-    SoundManager.sounds[sound].currentTime = 0;
+  for (let i = 1; i < 9999; i++) window.clearInterval(i);
+  MovableObject.intervalIds = [];
+  if (world) {
+    world = null;
+  }
+  ['gameOver', 'gameWin'].forEach((s) => {
+    SoundManager.sounds[s].pause();
+    SoundManager.sounds[s].currentTime = 0;
   });
-  SoundManager.playBackground();
   hideEndScreens();
+  Cloud.lastCloudX = 0;
   initLevel();
-  setTimeout(() => (world = new World(canvas, keyboard)), 50);
+  SoundManager.playBackground();
+  setTimeout(() => {
+    world = new World(canvas, keyboard);
+  }, 200);
 }
 
 /**
- * Hides all end-game overlays and restart button containers.
+ * Hides all overlay screens and restores global UI game buttons.
  */
 function hideEndScreens() {
   document
+    .querySelectorAll('#mute-btn, .mobile-impressum-top, .fullscreen-container, .mobile-controls')
+    .forEach((el) => el.classList.remove('d-none'));
+  document
     .querySelectorAll('#game-over-screen, #you-won-screen, #restart-container, #restart-container-desktop')
     .forEach((el) => el.classList.add('d-none'));
+}
+
+/**
+ * Hides background UI menus to only leave endscreen choices active.
+ */
+function showEndGameOverlay() {
+  document.querySelectorAll('#mute-btn, .mobile-impressum-top, .fullscreen-container, .mobile-controls').forEach((el) => el.classList.add('d-none'));
 }
 
 /**
@@ -53,24 +70,16 @@ function toggleFullscreen() {
 }
 
 /**
- * Global keydown listener to trigger fullscreen mode when 'F' key is pressed.
+ * Handles global key events for debugging and fullscreen toggles.
  */
 window.addEventListener('keydown', (event) => {
-  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-    return;
-  }
-
-  if (event.code === 'KeyF') {
-    toggleFullscreen();
-  }
-
-  if (event.code === 'KeyB') {
-    window.DEBUG_MODE = !window.DEBUG_MODE;
-  }
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+  if (event.code === 'KeyF') toggleFullscreen();
+  if (event.code === 'KeyB') window.DEBUG_MODE = !window.DEBUG_MODE;
 });
 
 /**
- * Toggles the global sound state and saves the choice to localStorage.
+ * Toggles the global sound state and saves the choice to local storage.
  */
 function toggleGameMute() {
   SoundManager.isMuted = !SoundManager.isMuted;
@@ -79,25 +88,26 @@ function toggleGameMute() {
 }
 
 /**
- * Updates text icons on all mute buttons and routes audio state adjustments.
+ * Syncs text icons on all mute buttons with the current audio state.
  */
 function updateMuteUI() {
   const btns = document.querySelectorAll('#mute-btn, .dialog-mute-btn');
   const icon = SoundManager.isMuted ? '🔇' : '🔊';
   btns.forEach((b) => {
-    b.innerText = icon;
-    b.blur();
+    if (b) {
+      b.innerText = icon;
+      b.blur();
+    }
   });
   handleAudioByState();
 }
 
 /**
- * Activates or deactivates sound groups based on the dialog overlay visibility.
+ * Routes audio playback logic depending on visibility of the dialog overlay.
  */
 function handleAudioByState() {
   const dialog = document.getElementById('start-dialog');
   const isDialogOpen = dialog && !dialog.classList.contains('d-none');
-
   if (SoundManager.isMuted) {
     SoundManager.muteAllSounds();
   } else if (isDialogOpen) {
@@ -109,7 +119,7 @@ function handleAudioByState() {
 }
 
 /**
- * Loads persistent mute configuration and synchronizes button visuals via delayed timeout.
+ * Loads persistent audio choices and triggers UI updates.
  */
 function checkSavedMuteStatus() {
   if (localStorage.getItem('gameMuted') === 'true') {
@@ -120,6 +130,6 @@ function checkSavedMuteStatus() {
 }
 
 /**
- * Core initial trigger running sound checks right when DOM structures become ready.
+ * Evaluates storage setups once document nodes finish preparing.
  */
 window.addEventListener('DOMContentLoaded', checkSavedMuteStatus);

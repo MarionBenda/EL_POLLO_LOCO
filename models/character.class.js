@@ -6,6 +6,7 @@ class Character extends MovableObject {
   deadAnimationPlayed = false;
   world;
   idleTimer = 0;
+  isBouncing = false;
 
   IMAGES_WALKING = [
     'img/2_character_pepe/2_walk/W-21.png',
@@ -66,7 +67,7 @@ class Character extends MovableObject {
   ];
 
   /**
-   * Initialize player character, preload animations and enable gravity.
+   * Initializes the character properties, loads animations, and applies gravity.
    */
   constructor() {
     super();
@@ -82,7 +83,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * Start per-frame movement and animation loops for the character.
+   * Starts periodic intervals for horizontal movement and state animations.
    */
   animate() {
     this.setStopableInterval(() => this.moveCharacter(), 1000 / 60);
@@ -90,7 +91,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handle input-based movement and camera follow with strict bounce protection.
+   * Handles character keyboard inputs for running, jumping, and camera positioning.
    */
   moveCharacter() {
     if (this.isDead() || MovableObject.gameIsOver) return;
@@ -109,12 +110,12 @@ class Character extends MovableObject {
   }
 
   /**
-   * Choose and play correct animation based on character state.
+   * Triggers the appropriate animation sequence depending on the current state.
    */
   playCharacterAnimations() {
     if (this.isDead()) {
       this.handleDeathAnimation();
-    } else if (this.isAboveGround()) {
+    } else if (this.isBouncing || this.isAboveGround()) {
       this.idleTimer = 0;
       this.playAirAnimation();
     } else if (this.isHurt()) {
@@ -126,53 +127,53 @@ class Character extends MovableObject {
   }
 
   /**
-   * Play jumping animation frames while in air.
+   * Maps current upward or downward physics velocity to specific jump textures.
    */
   playAirAnimation() {
-    let index = Math.floor(this.currentImage / 2) % 8;
+    let index = 0;
+    if (this.speedY > 18) index = 0;
+    else if (this.speedY > 13) index = 1;
+    else if (this.speedY > 8) index = 2;
+    else if (this.speedY > 3) index = 3;
+    else if (this.speedY > -3) index = 4;
+    else if (this.speedY > -8) index = 5;
+    else if (this.speedY > -13) index = 6;
+    else if (this.speedY > -18) index = 7;
+    else index = 8;
     this.img = this.imageCache[this.IMAGES_JUMPING[index]];
-    this.currentImage++;
   }
 
   /**
-   * Handle transition from air to landing and idle/walk states.
+   * Handles visual transition states when the character is on solid ground.
    */
   handleLandingAnimation() {
-    if (this.currentImage > 0 && this.isAboveGround()) {
-      this.img = this.imageCache[this.IMAGES_JUMPING[8]];
-      this.currentImage = 0;
-    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.idleTimer = 0;
       this.playAnimation(this.IMAGES_WALKING);
     } else {
-      if (this.idleTimer == 0) {
-        this.currentImage = 0;
-      }
+      if (this.idleTimer == 0) this.currentImage = 0;
       this.handleIdleState();
     }
   }
 
   /**
-   * Advance idle animation and switch to long idle after timeout.
+   * Manages short and long duration standing animations based on non-interaction timers.
    */
   handleIdleState() {
     this.idleTimer += 50;
-
     if (this.idleTimer >= 5000) {
       let i = Math.floor(this.currentImage / 3) % this.IMAGES_IDLE_LONG.length;
-      let path = this.IMAGES_IDLE_LONG[i];
-      this.img = this.imageCache[path];
+      this.img = this.imageCache[this.IMAGES_IDLE_LONG[i]];
       this.currentImage++;
     } else {
       let i = Math.floor(this.currentImage / 2) % this.IMAGES_IDLE.length;
-      let path = this.IMAGES_IDLE[i];
-      this.img = this.imageCache[path];
+      this.img = this.imageCache[this.IMAGES_IDLE[i]];
       this.currentImage++;
     }
   }
 
   /**
-   * Play death animation once and trigger game over.
+   * Iterates through dying textures once and coordinates the end-game trigger.
    */
   handleDeathAnimation() {
     if (this.deadAnimationPlayed) return;
@@ -184,9 +185,10 @@ class Character extends MovableObject {
   }
 
   /**
-   * Set game over state, play sound and reveal UI.
+   * Sets game state flags to stopped and reveals the game over interface screens.
    */
   showGameOver() {
+    showEndGameOverlay();
     MovableObject.gameIsOver = true;
     SoundManager.playSound('gameOver');
     document.getElementById('game-over-screen').classList.remove('d-none');
@@ -195,20 +197,22 @@ class Character extends MovableObject {
   }
 
   /**
-   * Apply upward velocity and instantly shift position upward to clear ground state.
-   * @param {number} [customSpeedY=22] - Optional vertical power impulse for high jumps.
+   * Applies upward velocity force fields to trigger a standard jump action.
    */
-  jump(customSpeedY = 30) {
+  jump(customSpeedY = 25) {
     this.speedY = customSpeedY;
     this.y -= 25;
-    this.currentImage = 0;
   }
 
   /**
-   * Trigger a vertical bounce impulse by resetting velocity and animation.
+   * Initiates a short bounce impulse when successfully landing on top of enemies.
    */
   bounceJump() {
-    this.speedY = 28;
-    this.currentImage = 0;
+    this.speedY = 25;
+    this.y -= 20;
+    this.isBouncing = true;
+    setTimeout(() => {
+      this.isBouncing = false;
+    }, 150);
   }
 }

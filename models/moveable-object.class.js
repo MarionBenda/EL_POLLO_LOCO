@@ -2,18 +2,15 @@ class MovableObject extends DrawableObject {
   speed = 0.15;
   otherDirection = false;
   speedY = 0;
-  acceleration = 2.8;
+  acceleration = 1.8;
   energy = 100;
   lastHit = 0;
   static intervalIds = [];
   static gameIsOver = false;
-
   offset = { top: 0, bottom: 0, left: 0, right: 0 };
 
   /**
-   * Start a stoppable interval and track its ID.
-   * @param {Function} callbackFunction - The function to execute.
-   * @param {number} time - Delay in milliseconds.
+   * Starts a stoppable interval loop and pushes its unique ID to the manager array.
    */
   setStopableInterval(callbackFunction, time) {
     let id = setInterval(callbackFunction, time);
@@ -21,7 +18,7 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Clear all stored intervals and reset game over flag.
+   * Clears out all registered intervals and resets the main game-over state tracker.
    */
   static stopAllIntervals() {
     MovableObject.intervalIds.forEach(clearInterval);
@@ -30,10 +27,11 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Apply constant gravity to the object using a periodic interval.
+   * Computes down-force gravity calculations synced smoothly to a 60 FPS viewport rhythm.
    */
   applyGravity() {
     this.setStopableInterval(() => {
+      if (MovableObject.gameIsOver) return;
       if (this.speedY > 0 || this.isAboveGround()) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -41,36 +39,32 @@ class MovableObject extends DrawableObject {
         this.y = 150;
         this.speedY = 0;
       }
-    }, 1000 / 25);
+    }, 1000 / 60);
   }
 
   /**
-   * Determine if the object is currently in the air.
-   * @returns {boolean|undefined} True if the object is above its ground level.
+   * Validates whether an entity currently positions above its designated ground floor level.
    */
   isAboveGround() {
     if (this instanceof ThrowableObject) return true;
     if (this instanceof Character) return this.y < 150;
+    return false;
   }
 
   /**
-   * Check if this object is falling directly onto another object from above.
-   * @param {MovableObject} mo - Target object.
-   * @returns {boolean} True if landing on target, false otherwise.
+   * Checks geometrically if an element is safely dropping down straight onto an enemy head.
    */
   isFallingOnto(mo) {
-    if (this.speedY > 5) return false;
     let charBottom = this.y + this.height - this.offset.bottom;
-    let enemyTop = mo.y + mo.offset.top;
-    let horOverlap = this.x + this.width - this.offset.right > mo.x + mo.offset.left && this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
-    let vertClose = charBottom <= enemyTop + 35 && charBottom >= enemyTop - 10;
-    return horOverlap && vertClose;
+    let enemyOffsetTop = mo.offset && mo.offset.top ? mo.offset.top : 0;
+    let enemyTop = mo.y + enemyOffsetTop;
+    let isFalling = this.speedY < 0;
+    let isAboveCenter = charBottom <= enemyTop + mo.height / 2;
+    return isFalling && isAboveCenter;
   }
 
   /**
-   * Detect an axis-aligned bounding box collision with another movable object, incorporating offsets.
-   * @param {MovableObject} mo - The other movable object to check collision against.
-   * @returns {boolean} True if the objects overlap, otherwise false.
+   * Evaluates axis-aligned bounding box collisions factoring in precise relative layout offsets.
    */
   isColliding(mo) {
     return (
@@ -82,56 +76,49 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Apply damage to this object and record the hit timestamp.
+   * Reduces structural health pools upon impact and records an active unix epoch time stamp.
    */
   hit() {
     this.energy -= 5;
-    if (this.energy < 0) {
-      this.energy = 0;
-    }
+    if (this.energy < 0) this.energy = 0;
     this.lastHit = new Date().getTime();
   }
 
   /**
-   * Return whether the object was hit recently (within 500ms).
-   * @returns {boolean}
+   * Calculates whether the unit suffered vital damage during the last 500ms safety window.
    */
   isHurt() {
     if (this.lastHit === 0) return false;
-    let timePassed = new Date().getTime() - this.lastHit;
-    return timePassed < 500;
+    return new Date().getTime() - this.lastHit < 500;
   }
 
   /**
-   * Check if the object's energy has reached zero.
-   * @returns {boolean} True if dead, otherwise false.
+   * Verifies if the health parameter metrics dropped down completely to absolute zero.
    */
   isDead() {
     return this.energy == 0;
   }
 
   /**
-   * Cycle through an array of images to play a continuous animation.
-   * @param {string[]} images - Array of image paths to be animated.
+   * Rotates texture imagery frames to create a fluid, non-disrupted procedural rendering pattern.
    */
   playAnimation(images) {
     let index = this.currentImage % images.length;
-    let path = images[index];
-    this.img = this.imageCache[path];
+    this.img = this.imageCache[images[index]];
     this.currentImage++;
   }
 
-  /** Move object to the right by its speed. */
+  /** Increments the horizontal position coordinate rightwards. */
   moveRight() {
     this.x += this.speed;
   }
 
-  /** Move object to the left by its speed. */
+  /** Decrements the horizontal position coordinate leftwards. */
   moveLeft() {
     this.x -= this.speed;
   }
 
-  /** Set upward velocity for jump. */
+  /** Initiates an instantaneous vertical launch impulse step. */
   jump() {
     this.speedY = 30;
   }

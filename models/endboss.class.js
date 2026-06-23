@@ -32,8 +32,8 @@ class Endboss extends MovableObject {
   IMAGES_DEAD = ['img/4_enemie_boss_chicken/5_dead/G24.png', 'img/4_enemie_boss_chicken/5_dead/G25.png', 'img/4_enemie_boss_chicken/5_dead/G26.png'];
 
   /**
-   * Create an Endboss at given x position and preload animations.
-   * @param {number} x - Starting X position for the boss.
+   * Initializes properties, preloads textures, and configures physical layout properties.
+   * @param {number} x - Starting horizontal coordinate.
    */
   constructor(x) {
     super();
@@ -50,7 +50,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Start periodic boss movement and animation loops.
+   * Starts periodic interval loops for artificial intelligence state processing and graphics.
    */
   animate() {
     this.setStopableInterval(() => this.moveBoss(), 1000 / 60);
@@ -58,12 +58,12 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Update boss movement state (patrol, enraged, return).
+   * Evaluates combat and patrol modes to dynamically apply directional velocity increments.
    */
   moveBoss() {
-    if (this.isDead) return;
+    if (this.isDead || !this.world || !this.world.character) return;
     if (this.isEnraged) {
-      this.x += (this.rageDirection === 'left' ? -1 : 1) * (this.speed * 3.5);
+      this.x += (this.rageDirection === 'left' ? -1 : 1) * (this.speed * 2);
       this.otherDirection = this.rageDirection === 'right';
     } else if (this.isReturning) {
       let dist = this.returnX - this.x;
@@ -76,14 +76,14 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Choose appropriate animation based on boss state.
+   * Cycles through textures depending on whether the unit is walking, charging, or injured.
    */
   playBossAnimations() {
     if (this.isDead) {
       this.handleBossDeath();
     } else if (this.isHurtStatus) {
       this.playAnimation(this.IMAGES_HURTS);
-    } else if (this.world && this.world.character.x > this.x - 400) {
+    } else if (this.world && this.world.character && this.world.character.x > this.x - 400) {
       this.playAnimation(this.IMAGES_ATTACK);
     } else {
       this.playAnimation(this.IMAGES_WALKING);
@@ -91,7 +91,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Play death animation and trigger win when finished.
+   * Controls final expiration texture cycles and triggers winning UI sequences on completion.
    */
   handleBossDeath() {
     if (this.deadAnimationPlayed) return;
@@ -103,7 +103,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Display 'you won' UI and stop the game.
+   * Halts active engine execution loops and displays victory screen graphics.
    */
   showYouWon() {
     MovableObject.gameIsOver = true;
@@ -113,22 +113,20 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Apply damage to boss, set hurt/enraged state and schedule behavior.
+   * Reduces health pools, tracks direction properties, and schedules behavioral state timers.
    */
   bossHit() {
     this.energy = Math.max(0, this.energy - 10);
     if (this.energy === 0) return Object.assign(this, { isDead: true, currentImage: 0 });
-
     this.isHurtStatus = true;
     this.isReturning = false;
     this.returnX = this.x;
     if (this.world?.character) this.rageDirection = this.world.character.x < this.x ? 'left' : 'right';
-
     this.triggerRageTimers();
   }
 
   /**
-   * Schedule boss phase transitions from hurt to enraged, then back to returning.
+   * Manages delayed asynchronous triggers to safely advance between aggressive combat phases.
    */
   triggerRageTimers() {
     setTimeout(() => Object.assign(this, { isHurtStatus: false, isEnraged: true }), 400);
