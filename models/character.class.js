@@ -147,9 +147,11 @@ class Character extends MovableObject {
    * Handles visual transition states when the character is on solid ground.
    */
   handleLandingAnimation() {
-    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.D) {
       this.idleTimer = 0;
-      this.playAnimation(this.IMAGES_WALKING);
+      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
     } else {
       if (this.idleTimer == 0) this.currentImage = 0;
       this.handleIdleState();

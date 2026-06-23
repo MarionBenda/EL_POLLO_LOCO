@@ -49,13 +49,13 @@ p strong {
 }
 
 p:last-of-type {
-  font-size: clamp(12px, 3vw, 14px);
+  font-size: clamp(16px, 3vw, 18px);
   opacity: 0.85;
 }
 
 p {
   font-family: 'Open-sans', cursive;
-  font-size: clamp(14px, 3.5vw, 18px);
+  font-size: clamp(16px, 3.5vw, 18px);
   line-height: 1.6;
   color: #ffffff;
   margin-top: 0;

@@ -65,14 +65,14 @@
       </div>
       <div id="restart-container" class="d-none dynamic-restart end-screen-menu">
         <button class="btn-restart" onclick="restartGame()">AGAIN</button>
-        <button class="btn-restart btn-leave" onclick="window.location.reload()">LEAVE</button>
+        <button class="btn-restart btn-leave" onclick="resetToMainMenu()">LEAVE</button>
       </div>
     </div>
 
     <div class="game-controls-bottom">
       <div id="restart-container-desktop" class="d-none dynamic-restart end-screen-menu">
         <button class="btn-restart" onclick="restartGame()">AGAIN</button>
-        <button class="btn-restart btn-leave" onclick="window.location.reload()">LEAVE</button>
+        <button class="btn-restart btn-leave" onclick="resetToMainMenu()">LEAVE</button>
       </div>
 
       <div class="fullscreen-container">
@@ -160,16 +160,7 @@
           </div>
         </fieldset>
 
-        <button
-          class="btn-restart"
-          onclick="
-            this.blur();
-            init();
-            document.getElementById('start-dialog').classList.add('d-none');
-          "
-        >
-          SPIEL STARTEN
-        </button>
+        <button class="btn-restart" onclick="startGameFromMenu(this)">SPIEL STARTEN</button>
       </div>
     </section>
   </body>

@@ -133,3 +133,36 @@ function checkSavedMuteStatus() {
  * Evaluates storage setups once document nodes finish preparing.
  */
 window.addEventListener('DOMContentLoaded', checkSavedMuteStatus);
+
+/**
+ * Resets the game and returns safely to the start dialog without page reload.
+ */
+function resetToMainMenu() {
+  for (let i = 1; i < 9999; i++) window.clearInterval(i);
+  if (typeof MovableObject !== 'undefined') MovableObject.intervalIds = [];
+  if (world) world = null;
+  clearEndgameAudio();
+  hideEndScreens();
+  showStartDialog();
+}
+
+/**
+ * Stops and resets all endgame sound tracks.
+ */
+function clearEndgameAudio() {
+  ['gameOver', 'gameWin'].forEach((s) => {
+    if (SoundManager.sounds[s]) {
+      SoundManager.sounds[s].pause();
+      SoundManager.sounds[s].currentTime = 0;
+    }
+  });
+}
+
+/**
+ * Reveals the start menu overlay and triggers welcome background music.
+ */
+function showStartDialog() {
+  const startDialog = document.getElementById('start-dialog');
+  if (startDialog) startDialog.classList.remove('d-none');
+  if (!SoundManager.isMuted) SoundManager.startDialogSound();
+}

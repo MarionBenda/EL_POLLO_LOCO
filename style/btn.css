@@ -30,14 +30,13 @@
 
 .btn-restart {
   font-family: 'Oi', cursive;
-  font-size: 30px;
   font-weight: lighter;
   letter-spacing: 2px;
   background-color: #333;
   color: #ffaa00;
   border: 3px solid #ffaa00;
   border-radius: 8px;
-  padding: 12px 40px;
+  padding: 10px 30px;
   margin-top: 10px;
   cursor: pointer;
   transition: all 175ms ease-in-out;

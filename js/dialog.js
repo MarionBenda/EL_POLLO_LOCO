@@ -1,10 +1,16 @@
 /**
- * Sets up the dialog audio on load and adds a listener for the first user click.
+ * Closes the start dialog view and initiates background gameplay environments.
  */
-window.addEventListener('DOMContentLoaded', () => {
-  if (!SoundManager.isMuted) SoundManager.startDialogSound();
-  document.body.addEventListener('click', handleFirstClick, { once: true });
-});
+window.closeStartDialog = function (event) {
+  const el = event.target;
+  if (el.classList.contains('dialog-mute-btn')) return;
+  if (document.querySelector('.dialog-content').contains(el) && !el.classList.contains('btn-restart')) return;
+
+  SoundManager.stopDialogSound();
+  if (!SoundManager.isMuted) SoundManager.playBackground();
+  document.getElementById('start-dialog').classList.add('d-none');
+  executeInit();
+};
 
 /**
  * Handles the first user click on the document to resume the intro dialog audio.
@@ -32,21 +38,6 @@ function checkAndPlayFirstClick(el) {
 }
 
 /**
- * Closes the start dialog overlay and switches audio tracks to the gameplay mode.
- * @param {MouseEvent} event - The click tracking parameters from the panel container.
- */
-function closeStartDialog(event) {
-  const el = event.target;
-  if (el.classList.contains('dialog-mute-btn')) return;
-  if (document.querySelector('.dialog-content').contains(el) && !el.classList.contains('btn-restart')) return;
-
-  SoundManager.stopDialogSound();
-  if (!SoundManager.isMuted) SoundManager.playBackground();
-  document.getElementById('start-dialog').classList.add('d-none');
-  executeInit();
-}
-
-/**
  * Safely executes the core game initialization function located in primary script environments.
  */
 function executeInit() {
@@ -56,3 +47,21 @@ function executeInit() {
     console.error('Die Funktion init() wurde in game.js nicht gefunden!');
   }
 }
+
+/**
+ * Triggers initial dialog audio setups once document elements finish rendering.
+ */
+window.addEventListener('DOMContentLoaded', () => {
+  if (!SoundManager.isMuted) SoundManager.startDialogSound();
+  document.body.addEventListener('click', handleFirstClick, { once: true });
+});
+
+/**
+ * This is registered globally here to ensure the HTML onclick finds it instantly.
+ */
+window.startGameFromMenu = function (button) {
+  if (button) button.blur();
+  if (typeof init === 'function') init();
+  const dialog = document.getElementById('start-dialog');
+  if (dialog) dialog.classList.add('d-none');
+};

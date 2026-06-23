@@ -37,6 +37,7 @@ h1 {
   font-size: clamp(30px, 6vw, 60px);
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
+  font-weight: lighter;
 }
 
 .canvas-wrapper {
@@ -413,19 +414,15 @@ kbd {
 }
 
 .dialog-impressum-link {
-  grid-column: 3;
-  grid-row: 1;
+  position: absolute;
+  top: 15px;
+  right: 20px;
   text-decoration: none;
-  font-size: 14px;
-  color: #ffaa00;
+  /* Vorher: 14px */
+  font-size: 16px;
+  color: rgba(255, 170, 0, 0.8);
   font-family: inherit;
-  background-color: rgba(255, 170, 0, 0.1);
-  padding: 6px 10px;
-  border: 2px solid #ffaa00;
-  border-radius: 8px;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: color 0.175ms ease;
 }
 
 .dialog-impressum-link:hover {

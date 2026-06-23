@@ -187,11 +187,36 @@ class World {
       enemy.bossHit();
       this.bossBar.setPercentage(enemy.energy);
       this.bossBar.playBlinkEffect();
+      if (enemy.energy <= 0) this.triggerWinSequence();
     } else {
       if (enemy.id && !this.hitEnemies.includes(enemy.id)) this.hitEnemies.push(enemy.id);
       enemy.kill();
     }
     typeof SoundManager !== 'undefined' && SoundManager.playSound(isBoss ? (enemy.energy <= 0 ? 'gameWin' : 'bossHit') : 'chickenDead');
+  }
+
+  /**
+   * Stops game loop mechanics and initiates UI overlay hiding.
+   */
+  triggerWinSequence() {
+    if (typeof showEndGameOverlay === 'function') showEndGameOverlay();
+    MovableObject.gameIsOver = true;
+    this.toggleWinScreens(false);
+    if (typeof MovableObject.stopAllIntervals === 'function') {
+      MovableObject.stopAllIntervals();
+    }
+  }
+
+  /**
+   * Toggles the visibility classes for winning interface elements.
+   */
+  toggleWinScreens(hide) {
+    const action = hide ? 'add' : 'remove';
+    const ids = ['#you-won-screen', '#restart-container', '#restart-container-desktop'];
+    ids.forEach((id) => {
+      const el = document.querySelector(id);
+      if (el) el.classList[action]('d-none');
+    });
   }
 
   /**
