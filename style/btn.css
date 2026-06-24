@@ -7,11 +7,12 @@
   color: #ffaa00;
   border: 2px solid #ffaa00;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: clamp(5px, 1vh, 8px) 10px;
   cursor: pointer;
   transition: all 175ms ease-in-out;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
 }
 
 .btn-fullscreen:hover {
@@ -19,13 +20,13 @@
   border-color: #ffcc00;
   color: #000;
   box-shadow:
-    0 0 8px #ffcc00,
-    0 0 15px rgba(255, 204, 0, 0.5);
-  transform: scale(1.03);
+    0 0 6px #ffcc00,
+    0 0 12px rgba(255, 204, 0, 0.5);
+  transform: translateY(-2px);
 }
 
 .btn-fullscreen:active {
-  transform: scale(0.98);
+  transform: translateY(0px) scale(0.98);
 }
 
 .btn-restart {
@@ -36,8 +37,8 @@
   color: #ffaa00;
   border: 3px solid #ffaa00;
   border-radius: 8px;
-  padding: 10px 30px;
-  margin-top: 10px;
+  padding: clamp(6px, 1.2vh, 10px) 30px;
+  margin-top: 0px;
   cursor: pointer;
   transition: all 175ms ease-in-out;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -49,13 +50,13 @@
   border-color: #ffcc00;
   color: #000;
   box-shadow:
-    0 0 8px #ffcc00,
-    0 0 20px rgba(255, 204, 0, 0.6);
-  transform: scale(1.03);
+    0 0 6px #ffcc00,
+    0 0 15px rgba(255, 204, 0, 0.6);
+  transform: translateY(-2px);
 }
 
 .btn-restart:active {
-  transform: scale(0.98);
+  transform: translateY(0px) scale(0.98);
   box-shadow:
     0 0 3px #ffff00,
     0 0 10px #ffff00;
@@ -63,12 +64,12 @@
 
 #game-over-screen .btn-restart:hover,
 #you-won-screen .btn-restart:hover {
-  transform: translateX(-50%) scale(1.03);
+  transform: translateX(-50%) translateY(-2px);
 }
 
 #game-over-screen .btn-restart:active,
 #you-won-screen .btn-restart:active {
-  transform: translateX(-50%) scale(0.98);
+  transform: translateX(-50%) translateY(0px) scale(0.98);
 }
 
 .btn-mute {
@@ -132,4 +133,35 @@
 
 .dialog-impressum-link:active {
   transform: scale(0.95);
+}
+
+.mobile-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 170, 0, 0.25);
+  border: 3px solid #ffaa00;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.1s ease,
+    background-color 0.1s ease;
+}
+
+.mobile-btn:active {
+  background-color: rgba(255, 170, 0, 0.7);
+  transform: scale(0.9);
+}
+
+.action-btn {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: white;
 }

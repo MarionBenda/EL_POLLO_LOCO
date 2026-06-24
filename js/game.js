@@ -63,7 +63,7 @@ function showEndGameOverlay() {
 function toggleFullscreen() {
   let element = document.querySelector('.canvas-wrapper');
   if (!document.fullscreenElement) {
-    element.requestFullscreen().catch((err) => console.warn(`Fehler: ${err.message}`));
+    element.requestFullscreen().catch(() => {});
   } else {
     document.exitFullscreen();
   }
@@ -106,13 +106,8 @@ function updateMuteUI() {
  * Routes audio playback logic depending on visibility of the dialog overlay.
  */
 function handleAudioByState() {
-  const dialog = document.getElementById('start-dialog');
-  const isDialogOpen = dialog && !dialog.classList.contains('d-none');
   if (SoundManager.isMuted) {
     SoundManager.muteAllSounds();
-  } else if (isDialogOpen) {
-    SoundManager.sounds.dialog.muted = false;
-    SoundManager.startDialogSound();
   } else {
     SoundManager.unmuteAllSounds();
   }
@@ -159,10 +154,9 @@ function clearEndgameAudio() {
 }
 
 /**
- * Reveals the start menu overlay and triggers welcome background music.
+ * Reveals the start menu overlay.
  */
 function showStartDialog() {
   const startDialog = document.getElementById('start-dialog');
   if (startDialog) startDialog.classList.remove('d-none');
-  if (!SoundManager.isMuted) SoundManager.startDialogSound();
 }

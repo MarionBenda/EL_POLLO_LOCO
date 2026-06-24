@@ -32,10 +32,8 @@
 @media (pointer: coarse) {
   html,
   body:not(.impressum-page) {
-    overflow: hidden;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100dvh;
   }
 
   .controls-desktop {
@@ -56,19 +54,30 @@
   }
 
   .canvas-wrapper {
-    width: 100vw;
-    max-width: none;
-    height: 100vh;
+    width: min(90vw, calc((100dvh - 40px) * 1.5));
+    max-width: 720px;
+    height: auto;
+    aspect-ratio: 3 / 2;
     box-shadow: none;
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/5_background/complete_background.png);
     background-size: cover;
     background-position: center;
+    margin: 0 auto;
   }
 
   .mobile-controls {
     display: flex;
-    padding: 20px 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    pointer-events: none;
+    z-index: 99;
     box-sizing: border-box;
+    padding: 20px 30px;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 
   .mobile-btn {
@@ -84,12 +93,19 @@
     padding: 4px 4px;
   }
 
+  #mute-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 100;
+    pointer-events: auto;
+  }
   .mobile-impressum-top {
     display: flex;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 20;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
     width: 40px;
     height: 40px;
     background-color: rgba(0, 0, 0, 0.5);
@@ -105,7 +121,7 @@
   .dialog-impressum-link {
     top: 10px;
     right: 15px;
-    font-size: 12px;
+    font-size: 16px;
     background-color: rgba(0, 0, 0, 0.4);
     padding: 4px 8px;
     border-radius: 4px;

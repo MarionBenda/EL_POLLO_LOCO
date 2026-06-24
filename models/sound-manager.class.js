@@ -1,6 +1,5 @@
 class SoundManager {
   static sounds = {
-    dialog: new Audio('audio/sound-dialog.mp3'),
     background: new Audio('audio/sound-background-game.mp3'),
     coin: new Audio('audio/sound-coin.mp3'),
     bottle: new Audio('audio/sound-bottle.mp3'),
@@ -16,32 +15,23 @@ class SoundManager {
   static isMuted = false;
 
   /**
-   * Starts looping the menu dialog audio track with catch safety.
+   * Starts looping the menu dialog audio track (Disabled - removed dialog sound).
    */
-  static startDialogSound() {
-    if (this.isMuted) return;
-    this.sounds.dialog.loop = true;
-    this.sounds.dialog.volume = 0.3;
-    this.sounds.dialog.play().catch((e) => console.log('Wartet auf erste Interaktion für Dialog-Sound.'));
-  }
+  static startDialogSound() {}
 
   /**
-   * Instantly pauses the menu dialog sound track and resets its timeline pointer.
+   * Instantly pauses the menu dialog sound track (Disabled - removed dialog sound).
    */
-  static stopDialogSound() {
-    this.sounds.dialog.pause();
-    this.sounds.dialog.currentTime = 0;
-  }
+  static stopDialogSound() {}
 
   /**
    * Starts looping the main gameplay background music track with safety triggers.
    */
   static playBackground() {
     if (this.isMuted) return;
-    this.stopDialogSound();
     this.sounds.background.loop = true;
     this.sounds.background.volume = 0.15;
-    this.sounds.background.play().catch((e) => console.log('Hintergrundmusik wartet...'));
+    this.sounds.background.play().catch(() => {});
   }
 
   /**
@@ -84,10 +74,9 @@ class SoundManager {
     Object.values(this.sounds).forEach((sound) => {
       sound.muted = false;
     });
-    this.stopDialogSound();
     if (this.sounds && this.sounds.background) {
       this.sounds.background.volume = 0.15;
-      this.sounds.background.play().catch((e) => console.log('Hintergrundmusik wartet auf User-Interaktion:', e));
+      this.sounds.background.play().catch(() => {});
     }
   }
 }
