@@ -81,23 +81,37 @@ class CoinBar extends ConfigurableStatusBar {
   }
 }
 
-class HealthBar extends ConfigurableStatusBar {
-  /**
-   * Configures the primary character health vital layers starting full.
-   */
+class HealthBar extends StatusBar {
+  IMAGES = [
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png',
+  ];
+
   constructor() {
-    super(
-      [
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png',
-      ],
-      0,
-      100,
-      5,
-    );
+    super();
+    this.loadImages(this.IMAGES);
+    this.y = 0;
+    this.setPercentage(100);
+  }
+
+  resolveImageIndex() {
+    if (this.percentage <= 0) {
+      return 0;
+    }
+    if (this.percentage == 100) {
+      return 5;
+    } else if (this.percentage > 80) {
+      return 4;
+    } else if (this.percentage > 60) {
+      return 3;
+    } else if (this.percentage > 40) {
+      return 2;
+    } else {
+      return 1;
+    }
   }
 }

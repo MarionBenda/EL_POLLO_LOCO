@@ -79,7 +79,8 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_IDLE_LONG);
     this.applyGravity();
-    this.offset = { top: 120, bottom: 10, left: 15, right: 15 };
+    this.offset = { top: 110, bottom: 10, left: 15, right: 15 };
+    this.acceleration = 2;
   }
 
   /**
@@ -175,12 +176,19 @@ class Character extends MovableObject {
   }
 
   /**
-   * Iterates through dying textures once and coordinates the end-game trigger.
+   * Triggers a slight death bounce and cycles through all demise textures.
    */
   handleDeathAnimation() {
     if (this.deadAnimationPlayed) return;
-    this.playAnimation(this.IMAGES_DEAD);
     if (this.currentImage >= this.IMAGES_DEAD.length) {
+      this.currentImage = 0;
+      this.speedY = 25;
+      this.offset = { top: -999, bottom: -999, left: -999, right: -999 };
+    }
+    this.x += 4;
+    this.img = this.imageCache[this.IMAGES_DEAD[this.currentImage]];
+    this.currentImage++;
+    if (this.currentImage === this.IMAGES_DEAD.length) {
       this.deadAnimationPlayed = true;
       this.showGameOver();
     }
@@ -188,14 +196,22 @@ class Character extends MovableObject {
 
   /**
    * Sets game state flags to stopped and reveals the game over interface screens.
+   * Jetzt mit eingebauter Verzögerung, damit man Pepes Tod auch sieht!
    */
   showGameOver() {
-    showEndGameOverlay();
-    MovableObject.gameIsOver = true;
-    SoundManager.playSound('gameOver');
-    document.getElementById('game-over-screen').classList.remove('d-none');
-    document.getElementById('restart-container').classList.remove('d-none');
-    MovableObject.stopAllIntervals();
+    setTimeout(() => {
+      showEndGameOverlay();
+      MovableObject.gameIsOver = true;
+      SoundManager.playSound('gameOver');
+
+      let gameOverScreen = document.getElementById('game-over-screen');
+      if (gameOverScreen) gameOverScreen.classList.remove('d-none');
+
+      let restartContainer = document.getElementById('restart-container');
+      if (restartContainer) restartContainer.classList.remove('d-none');
+
+      MovableObject.stopAllIntervals();
+    }, 1000);
   }
 
   /**

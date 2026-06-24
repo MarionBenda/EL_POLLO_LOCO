@@ -14,7 +14,7 @@ class Bottle extends MovableObject {
    */
   constructor(x, isInAir) {
     super();
-    this.offset = { top: 35, bottom: 35, left: 35, right: 35 };
+    this.offset = { top: 15, bottom: 5, left: 15, right: 15 };
     this.loadImages(this.IMAGES_BOTTLES);
     this.x = x;
     this.setupBottleType(isInAir);
